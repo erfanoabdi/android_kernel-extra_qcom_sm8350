@@ -1269,13 +1269,14 @@ static void qsmmuv500_device_remove(struct arm_smmu_device *smmu)
 }
 
 static bool arm_smmu_fwspec_match_smr(struct iommu_fwspec *fwspec,
+				      struct arm_smmu_master_cfg *cfg,
 				      struct arm_smmu_smr *smr)
 {
 	struct arm_smmu_smr *smr2;
-	struct arm_smmu_device *smmu = fwspec_smmu(fwspec);
+	struct arm_smmu_device *smmu = cfg->smmu;
 	int i, idx;
 
-	for_each_cfg_sme(fwspec, i, idx) {
+	for_each_cfg_sme(cfg, fwspec, i, idx) {
 		smr2 = &smmu->smrs[idx];
 		/* Continue if table entry does not match */
 		if ((smr->id ^ smr2->id) & ~(smr->mask | smr2->mask))
@@ -1658,12 +1659,19 @@ static int qsmmuv500_device_group(struct device *dev,
 				struct iommu_group *group)
 {
 	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
-	struct arm_smmu_device *smmu = fwspec_smmu(fwspec);
-	struct qsmmuv500_archdata *data = to_qsmmuv500_archdata(smmu);
+	struct arm_smmu_device *smmu;
+	struct arm_smmu_master_cfg *cfg;
+	struct qsmmuv500_archdata *data;
 	struct qsmmuv500_group_iommudata *iommudata;
 	u32 actlr, i;
 	struct arm_smmu_smr *smr;
 
+	cfg = fwspec->iommu_priv;
+	if (!cfg)
+		return -ENODEV;
+	smmu = cfg->smmu;
+
+	data = to_qsmmuv500_archdata(smmu);
 	iommudata = to_qsmmuv500_group_iommudata(group);
 	if (!iommudata) {
 		iommudata = kzalloc(sizeof(*iommudata), GFP_KERNEL);
@@ -1678,7 +1686,7 @@ static int qsmmuv500_device_group(struct device *dev,
 		smr = &data->actlrs[i].smr;
 		actlr = data->actlrs[i].actlr;
 
-		if (!arm_smmu_fwspec_match_smr(fwspec, smr))
+		if (!arm_smmu_fwspec_match_smr(fwspec, cfg, smr))
 			continue;
 
 		if (!iommudata->has_actlr) {
