@@ -2609,8 +2609,8 @@ static bool arm_smmu_free_sme(struct arm_smmu_device *smmu, int idx)
 
 static int arm_smmu_master_alloc_smes(struct device *dev)
 {
+	struct arm_smmu_master_cfg *cfg = dev_iommu_priv_get(dev);
 	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
-	struct arm_smmu_master_cfg *cfg = fwspec->iommu_priv;
 	struct arm_smmu_device *smmu = cfg->smmu;
 	struct arm_smmu_smr *smrs = smmu->smrs;
 	struct iommu_group *group;
@@ -2770,7 +2770,7 @@ static void arm_smmu_detach_dev(struct iommu_domain *domain,
 		return;
 	}
 
-	cfg = fwspec->iommu_priv;
+	cfg = dev_iommu_priv_get(dev);
 	if (!cfg)
 		return;
 
@@ -3083,12 +3083,12 @@ static struct iommu_group *of_get_device_group(struct device *dev)
 
 static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
 {
-	int ret;
-	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
 	struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
+	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
 	struct arm_smmu_master_cfg *cfg;
 	struct arm_smmu_device *smmu;
 	int s1_bypass = 0;
+	int ret;
 
 	if (!fwspec || fwspec->ops != &arm_smmu_ops.iommu_ops) {
 		dev_err(dev, "cannot attach to SMMU, is it on the same bus?\n");
@@ -3102,7 +3102,7 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
 	 * domains, just say no (but more politely than by dereferencing NULL).
 	 * This should be at least a WARN_ON once that's sorted.
 	 */
-	cfg = fwspec->iommu_priv;
+	cfg = dev_iommu_priv_get(dev);
 	if (!cfg)
 		return -ENODEV;
 
@@ -3655,7 +3655,7 @@ static int arm_smmu_add_device(struct device *dev)
 		goto out_pwr_off;
 
 	cfg->smmu = smmu;
-	fwspec->iommu_priv = cfg;
+	dev_iommu_priv_set(dev, cfg);
 	while (i--)
 		cfg->smendx[i] = INVALID_SMENDX;
 
@@ -3695,7 +3695,7 @@ static void arm_smmu_remove_device(struct device *dev)
 	if (!fwspec || fwspec->ops != &arm_smmu_ops.iommu_ops)
 		return;
 
-	cfg  = fwspec->iommu_priv;
+	cfg  = dev_iommu_priv_get(dev);
 	smmu = cfg->smmu;
 
 	ret = arm_smmu_rpm_get(smmu);
@@ -3715,8 +3715,9 @@ static void arm_smmu_remove_device(struct device *dev)
 	}
 
 	arm_smmu_master_free_smes(cfg, fwspec);
+	dev_iommu_priv_set(dev, NULL);
 	iommu_group_remove_device(dev);
-	kfree(fwspec->iommu_priv);
+	kfree(cfg);
 	iommu_fwspec_free(dev);
 	arm_smmu_power_off(smmu, smmu->pwr);
 	arm_smmu_rpm_put(smmu);
@@ -3724,8 +3725,8 @@ static void arm_smmu_remove_device(struct device *dev)
 
 static struct iommu_group *arm_smmu_device_group(struct device *dev)
 {
+	struct arm_smmu_master_cfg *cfg = dev_iommu_priv_get(dev);
 	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
-	struct arm_smmu_master_cfg *cfg = fwspec->iommu_priv;
 	struct arm_smmu_device *smmu = cfg->smmu;
 	struct iommu_group *group = NULL;
 	int i, idx;
@@ -4421,7 +4422,7 @@ static int arm_smmu_alloc_cb(struct iommu_domain *domain,
 			return -EINVAL;
 	}
 
-	cfg = fwspec->iommu_priv;
+	cfg = dev_iommu_priv_get(dev);
 	if (!cfg)
 		return -ENODEV;
 

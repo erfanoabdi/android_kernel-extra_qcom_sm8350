@@ -1666,7 +1666,7 @@ static int qsmmuv500_device_group(struct device *dev,
 	u32 actlr, i;
 	struct arm_smmu_smr *smr;
 
-	cfg = fwspec->iommu_priv;
+	cfg = dev_iommu_priv_get(dev);
 	if (!cfg)
 		return -ENODEV;
 	smmu = cfg->smmu;
