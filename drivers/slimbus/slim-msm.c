@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2019, The Linux Foundation. All rights reserved.
  */
 #include <linux/delay.h>
-#include <linux/dma-mapping.h>
+#include <linux/dma-mapping_caf.h>
 #include <linux/gcd.h>
 #include <linux/msm-sps.h>
 #include <linux/platform_device.h>

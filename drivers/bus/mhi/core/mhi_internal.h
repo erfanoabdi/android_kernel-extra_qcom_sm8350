@@ -2,6 +2,7 @@
 /* Copyright (c) 2018-2020, The Linux Foundation. All rights reserved. */
 
 #include <linux/msm_rtb.h>
+#include <linux/dma-mapping_caf.h>
 
 #ifndef _MHI_INT_H
 #define _MHI_INT_H

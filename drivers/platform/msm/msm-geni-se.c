@@ -4,7 +4,7 @@
  */
 
 #include <linux/clk.h>
-#include <linux/dma-mapping.h>
+#include <linux/dma-mapping_caf.h>
 #include <linux/ipc_logging.h>
 #include <linux/io.h>
 #include <linux/list.h>
