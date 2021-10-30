@@ -8,4 +8,4 @@ export $(shell sed 's/=.*//' $(M)/config/lahaina_GKI.config)
 LINUXINCLUDE    += \
                 -include $(M)/config/lahaina_GKI.h
 
-obj-y	:= fs/ kernel/ net/ sound/ techpack/
+obj-y	:= drivers/ fs/ kernel/ net/ sound/ techpack/
