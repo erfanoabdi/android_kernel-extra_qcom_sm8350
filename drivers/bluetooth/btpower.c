@@ -23,7 +23,7 @@
 #include <linux/uaccess.h>
 #include <linux/btpower.h>
 #include <linux/of_device.h>
-#include <soc/qcom/cmd-db.h>
+#include <soc/qcom/cmd-db_caf.h>
 
 #if defined CONFIG_BT_SLIM_QCA6390 || \
 	defined CONFIG_BT_SLIM_QCA6490 || \

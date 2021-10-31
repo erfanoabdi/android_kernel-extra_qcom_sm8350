@@ -13,7 +13,7 @@
 #include <linux/seq_file.h>
 #include <linux/types.h>
 
-#include <soc/qcom/cmd-db.h>
+#include <soc/qcom/cmd-db_caf.h>
 
 #define NUM_PRIORITY		2
 #define MAX_SLV_ID		8

@@ -7,7 +7,7 @@
 #ifndef __DRIVERS_INTERCONNECT_QCOM_ICC_BCM_VOTER_H__
 #define __DRIVERS_INTERCONNECT_QCOM_ICC_BCM_VOTER_H__
 
-#include <soc/qcom/cmd-db.h>
+#include <soc/qcom/cmd-db_caf.h>
 #include <soc/qcom/rpmh.h>
 #include <soc/qcom/tcs.h>
 

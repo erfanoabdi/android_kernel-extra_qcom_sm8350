@@ -15,7 +15,7 @@
 #include <linux/slab.h>
 #include <linux/soc/qcom/llcc-qcom_caf.h>
 #include <linux/mailbox/qmp.h>
-#include <soc/qcom/cmd-db.h>
+#include <soc/qcom/cmd-db_caf.h>
 #include <soc/qcom/boot_stats.h>
 
 #include "adreno.h"

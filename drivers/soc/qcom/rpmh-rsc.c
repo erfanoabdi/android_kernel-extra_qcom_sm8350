@@ -17,7 +17,7 @@
 #include <linux/slab.h>
 #include <linux/spinlock.h>
 
-#include <soc/qcom/cmd-db.h>
+#include <soc/qcom/cmd-db_caf.h>
 #include <soc/qcom/tcs.h>
 #include <dt-bindings/soc/qcom,rpmh-rsc.h>
 

@@ -5,7 +5,7 @@
 
 #include <dt-bindings/regulator/qcom,rpmh-regulator-levels.h>
 #include <linux/types.h>
-#include <soc/qcom/cmd-db.h>
+#include <soc/qcom/cmd-db_caf.h>
 #include <soc/qcom/tcs.h>
 
 #include "adreno.h"

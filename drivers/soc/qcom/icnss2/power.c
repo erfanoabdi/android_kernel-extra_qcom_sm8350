@@ -7,7 +7,7 @@
 #include <linux/of.h>
 #include <linux/pinctrl/consumer.h>
 #include <linux/regulator/consumer.h>
-#include <soc/qcom/cmd-db.h>
+#include <soc/qcom/cmd-db_caf.h>
 #include <linux/io.h>
 #include "main.h"
 #include "qmi.h"

@@ -17,7 +17,7 @@
 #include <linux/regulator/of_regulator.h>
 #include <linux/regulator/proxy-consumer.h>
 
-#include <soc/qcom/cmd-db.h>
+#include <soc/qcom/cmd-db_caf.h>
 #include <soc/qcom/rpmh.h>
 
 #include <dt-bindings/regulator/qcom,rpmh-regulator-levels.h>

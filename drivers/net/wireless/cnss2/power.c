@@ -8,7 +8,7 @@
 #include <linux/pinctrl/consumer.h>
 #include <linux/regulator/consumer.h>
 #if IS_ENABLED(CONFIG_QCOM_COMMAND_DB)
-#include <soc/qcom/cmd-db.h>
+#include <soc/qcom/cmd-db_caf.h>
 #endif
 
 #include "main.h"
