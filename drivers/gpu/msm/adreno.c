@@ -14,7 +14,7 @@
 #include <linux/module.h>
 #include <linux/regulator/consumer.h>
 #include <linux/nvmem-consumer.h>
-#include <linux/soc/qcom/llcc-qcom.h>
+#include <linux/soc/qcom/llcc-qcom_caf.h>
 #include <soc/qcom/subsystem_restart.h>
 #include <soc/qcom/boot_stats.h>
 

@@ -17,7 +17,7 @@
 #include <linux/regulator/consumer.h>
 #include <linux/sizes.h>
 #include <linux/thermal.h>
-#include <linux/soc/qcom/llcc-qcom.h>
+#include <linux/soc/qcom/llcc-qcom_caf.h>
 #include <linux/soc/qcom/cdsprm_cxlimit.h>
 #include <soc/qcom/devfreq_icc.h>
 

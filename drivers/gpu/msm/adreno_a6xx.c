@@ -9,7 +9,7 @@
 #include <linux/of_fdt.h>
 #include <linux/of_device.h>
 #include <linux/regulator/consumer.h>
-#include <linux/soc/qcom/llcc-qcom.h>
+#include <linux/soc/qcom/llcc-qcom_caf.h>
 
 #include "adreno.h"
 #include "adreno_a6xx.h"

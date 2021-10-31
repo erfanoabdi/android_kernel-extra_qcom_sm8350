@@ -8,7 +8,7 @@
 #include <linux/module.h>
 #include <linux/of.h>
 #include <linux/of_device.h>
-#include <linux/soc/qcom/llcc-qcom.h>
+#include <linux/soc/qcom/llcc-qcom_caf.h>
 
 /*
  * SCT(System Cache Table) entry contains of the following members:

@@ -6,7 +6,7 @@
 #ifndef _TCM_QCOM_H_
 #define _TCM_QCOM_H_
 
-#include <linux/soc/qcom/llcc-qcom.h>
+#include <linux/soc/qcom/llcc-qcom_caf.h>
 
 struct llcc_tcm_data {
 	phys_addr_t phys_addr;

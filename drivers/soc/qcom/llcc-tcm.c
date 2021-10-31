@@ -8,7 +8,7 @@
 #include <linux/mutex.h>
 #include <linux/sizes.h>
 
-#include <linux/soc/qcom/llcc-qcom.h>
+#include <linux/soc/qcom/llcc-qcom_caf.h>
 #include <linux/soc/qcom/llcc-tcm.h>
 
 struct llcc_tcm_drv_data {

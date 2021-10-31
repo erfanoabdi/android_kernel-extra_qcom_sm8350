@@ -6,7 +6,7 @@
 #include <linux/clk.h>
 #include <linux/component.h>
 #include <linux/interconnect.h>
-#include <linux/soc/qcom/llcc-qcom.h>
+#include <linux/soc/qcom/llcc-qcom_caf.h>
 
 #include "adreno.h"
 #include "adreno_a6xx.h"

@@ -12,7 +12,7 @@
 #include <linux/io.h>
 #include <linux/hrtimer.h>
 #include <linux/regmap.h>
-#include <linux/soc/qcom/llcc-qcom.h>
+#include <linux/soc/qcom/llcc-qcom_caf.h>
 #include <linux/module.h>
 #include <linux/clk.h>
 #include "llcc_events.h"

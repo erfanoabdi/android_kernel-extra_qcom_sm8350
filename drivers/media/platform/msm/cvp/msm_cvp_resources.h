@@ -9,7 +9,7 @@
 #include <linux/devfreq.h>
 #include <linux/platform_device.h>
 #include "msm_cvp_core.h"
-#include <linux/soc/qcom/llcc-qcom.h>
+#include <linux/soc/qcom/llcc-qcom_caf.h>
 
 struct reg_value_pair {
 	u32 reg;

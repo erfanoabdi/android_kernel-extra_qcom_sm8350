@@ -13,7 +13,7 @@
 #include <linux/of_platform.h>
 #include <linux/regulator/consumer.h>
 #include <linux/slab.h>
-#include <linux/soc/qcom/llcc-qcom.h>
+#include <linux/soc/qcom/llcc-qcom_caf.h>
 #include <linux/mailbox/qmp.h>
 #include <soc/qcom/cmd-db.h>
 #include <soc/qcom/boot_stats.h>
