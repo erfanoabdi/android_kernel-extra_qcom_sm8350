@@ -15,7 +15,7 @@
 #include <linux/of_irq.h>
 #include <linux/of_platform.h>
 #include <linux/pm_opp.h>
-#include <linux/sched.h>
+#include <linux/sched_caf.h>
 #include <linux/slab.h>
 
 #define CREATE_TRACE_POINTS

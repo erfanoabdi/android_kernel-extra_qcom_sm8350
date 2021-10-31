@@ -17,7 +17,7 @@
 #include <linux/completion.h>
 #include <linux/mod_devicetable.h>
 #include <linux/platform_device.h>
-#include <linux/sched.h>
+#include <linux/sched_caf.h>
 #include <dt-bindings/interrupt-controller/arm-gic.h>
 
 #include <linux/haven/hh_dbl.h>
