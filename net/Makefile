@@ -1,1 +1,1 @@
-obj-y	:= embms_kernel/ ipv4/ neuron/ qrtr/
+obj-y	:= ipv4/ neuron/ qrtr/
