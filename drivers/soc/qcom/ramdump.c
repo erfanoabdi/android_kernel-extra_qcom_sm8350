@@ -14,7 +14,7 @@
 #include <linux/slab.h>
 #include <linux/poll.h>
 #include <linux/uaccess.h>
-#include <linux/elf.h>
+#include <linux/elf_caf.h>
 #include <linux/wait.h>
 #include <linux/cdev.h>
 #include <linux/srcu.h>
