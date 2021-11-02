@@ -5,7 +5,7 @@
 #ifndef SERVICE_REGISTRY_NOTIFIER_H
 #define SERVICE_REGISTRY_NOTIFIER_H
 
-#include <linux/soc/qcom/qmi.h>
+#include <linux/soc/qcom/qmi_caf.h>
 
 #define SERVREG_NOTIF_SERVICE_ID_V01 0x42
 #define SERVREG_NOTIF_SERVICE_VERS_V01 0x01
