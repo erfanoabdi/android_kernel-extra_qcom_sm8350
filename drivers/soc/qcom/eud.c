@@ -60,6 +60,9 @@
 
 #define EUD_TCSR_ENABLE_BIT	BIT(0)
 
+/* QTI EUD UART */
+#define PORT_EUD_UART  118
+
 struct eud_chip {
 	struct device			*dev;
 	int				eud_irq;
