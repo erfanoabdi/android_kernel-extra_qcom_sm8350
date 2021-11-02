@@ -15,7 +15,7 @@
 #include <linux/mman.h>
 #include <linux/mm_types.h>
 #include <linux/msm_kgsl.h>
-#include <linux/of.h>
+#include <linux/of_caf.h>
 #include <linux/of_fdt.h>
 #include <linux/pm_runtime.h>
 #include <linux/security.h>

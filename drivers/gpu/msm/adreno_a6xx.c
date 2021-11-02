@@ -5,7 +5,7 @@
 
 #include <linux/clk/qcom.h>
 #include <linux/io.h>
-#include <linux/of.h>
+#include <linux/of_caf.h>
 #include <linux/of_fdt.h>
 #include <linux/of_device.h>
 #include <linux/regulator/consumer.h>

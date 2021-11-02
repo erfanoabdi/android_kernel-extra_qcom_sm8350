@@ -4,7 +4,7 @@
  */
 
 #include <linux/interconnect.h>
-#include <linux/of.h>
+#include <linux/of_caf.h>
 #include <linux/devfreq.h>
 
 #include "../../devfreq/governor.h"
@@ -58,7 +58,7 @@ static void set_ddr_qos(struct kgsl_device *device, int buslevel)
 	 * We need the event lock to protect against concurrent governor
 	 * re-assignments.
 	 */
-	event_mutex_lock(dev);
+	//event_mutex_lock(dev);
 	mutex_lock(&dev->lock);
 	/*
 	 * Update both min/max to make sure correct vote is set regardless
@@ -68,7 +68,7 @@ static void set_ddr_qos(struct kgsl_device *device, int buslevel)
 	dev->max_freq = new_min_freq;
 	ret = update_devfreq(dev);
 	mutex_unlock(&dev->lock);
-	event_mutex_unlock(dev);
+	//event_mutex_unlock(dev);
 
 	if (!ret)
 		cur_min_freq = new_min_freq;

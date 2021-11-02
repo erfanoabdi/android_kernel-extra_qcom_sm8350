@@ -18,7 +18,7 @@
 #include <linux/interrupt.h>
 #include <linux/devfreq.h>
 #include <linux/slab.h>
-#include <linux/of.h>
+#include <linux/of_caf.h>
 #include <linux/of_fdt.h>
 #include <linux/of_address.h>
 #include <linux/of_device.h>
