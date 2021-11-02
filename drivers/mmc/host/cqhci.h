@@ -14,6 +14,9 @@
 #include <asm/io.h>
 #include <linux/keyslot-manager.h>
 
+/* Stub log */
+#define mmc_log_string(mmc_host, fmt, ...)	do { } while (0)
+
 /* registers */
 /* version */
 #define CQHCI_VER			0x00
