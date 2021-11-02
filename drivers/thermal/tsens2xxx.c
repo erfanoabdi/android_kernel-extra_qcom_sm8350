@@ -12,6 +12,7 @@
 #include "tsens.h"
 #include "thermal_core.h"
 #include <linux/qcom_scm_caf.h>
+#include <linux/msm_rtb.h>
 
 #define TSENS_TM_INT_EN(n)			((n) + 0x4)
 #define TSENS_TM_CRITICAL_INT_STATUS(n)		((n) + 0x14)

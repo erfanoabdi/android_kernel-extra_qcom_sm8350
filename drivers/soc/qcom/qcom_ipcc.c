@@ -10,6 +10,7 @@
 #include <linux/platform_device.h>
 #include <linux/mailbox_controller.h>
 #include <dt-bindings/soc/qcom,ipcc.h>
+#include <linux/msm_rtb.h>
 
 /* IPCC Register offsets */
 #define IPCC_REG_SEND_ID		0x0C

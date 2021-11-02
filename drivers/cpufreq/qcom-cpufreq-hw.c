@@ -17,6 +17,7 @@
 #include <linux/pm_opp.h>
 #include <linux/sched_caf.h>
 #include <linux/slab.h>
+#include <linux/msm_rtb.h>
 
 #define CREATE_TRACE_POINTS
 #include <trace/events/dcvsh.h>

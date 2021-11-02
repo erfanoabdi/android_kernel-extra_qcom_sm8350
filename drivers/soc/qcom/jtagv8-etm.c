@@ -29,6 +29,7 @@
 #include <soc/qcom/jtag.h>
 #include <asm/smp_plat.h>
 #include <asm/etmv4x.h>
+#include <linux/msm_rtb.h>
 
 #define CORESIGHT_LAR		(0xFB0)
 

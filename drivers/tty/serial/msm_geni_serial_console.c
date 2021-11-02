@@ -6,6 +6,7 @@
 #include <linux/console.h>
 #include <linux/serial_core.h>
 #include <linux/io.h>
+#include <linux/msm_rtb.h>
 
 
 #define SE_UART_TX_TRANS_CFG		(0x25C)
