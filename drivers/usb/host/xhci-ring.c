@@ -281,7 +281,7 @@ void xhci_ring_cmd_db(struct xhci_hcd *xhci)
 
 	xhci_dbg(xhci, "// Ding dong!\n");
 
-	trace_xhci_ring_host_doorbell(0, DB_VALUE_HOST);
+	//trace_xhci_ring_host_doorbell(0, DB_VALUE_HOST);
 
 	writel(DB_VALUE_HOST, &xhci->dba->doorbell[0]);
 	/* Flush PCI posted writes */
@@ -405,7 +405,7 @@ void xhci_ring_ep_doorbell(struct xhci_hcd *xhci,
 	    (ep_state & EP_HALTED) || (ep_state & EP_CLEARING_TT))
 		return;
 
-	trace_xhci_ring_ep_doorbell(slot_id, DB_VALUE(ep_index, stream_id));
+	//trace_xhci_ring_ep_doorbell(slot_id, DB_VALUE(ep_index, stream_id));
 
 	writel(DB_VALUE(ep_index, stream_id), db_addr);
 	/* The CPU has better things to do at this point than wait for a
