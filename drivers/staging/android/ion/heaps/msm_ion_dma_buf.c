@@ -6,7 +6,7 @@
 
 #include <linux/device.h>
 #include <linux/dma-buf.h>
-#include <linux/dma-noncoherent.h>
+#include <linux/dma-noncoherent_caf.h>
 #include <linux/err.h>
 #include <linux/export.h>
 #include <linux/file.h>
