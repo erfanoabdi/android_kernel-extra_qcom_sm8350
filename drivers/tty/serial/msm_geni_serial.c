@@ -22,7 +22,7 @@
 #include <linux/slab.h>
 #include <linux/tty.h>
 #include <linux/tty_flip.h>
-#include <linux/ioctl.h>
+#include <linux/ioctl_caf.h>
 #include <linux/pinctrl/consumer.h>
 #include <linux/dma-mapping.h>
 #include <uapi/linux/msm_geni_serial.h>
