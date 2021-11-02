@@ -5,7 +5,7 @@
 
 #define pr_fmt(fmt) "haven: " fmt
 
-#include <linux/arm-smccc.h>
+#include <linux/arm-smccc_caf.h>
 #include <linux/debugfs.h>
 #include <linux/module.h>
 #include <linux/kobject.h>

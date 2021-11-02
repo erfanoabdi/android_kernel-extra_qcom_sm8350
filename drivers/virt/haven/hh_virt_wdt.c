@@ -5,7 +5,7 @@
  */
 
 #include <soc/qcom/watchdog.h>
-#include <linux/arm-smccc.h>
+#include <linux/arm-smccc_caf.h>
 #include <linux/haven/hh_errno.h>
 #include <linux/kernel.h>
 #include <linux/mod_devicetable.h>
