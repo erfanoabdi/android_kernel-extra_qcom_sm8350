@@ -8,7 +8,7 @@
 #include <linux/firmware.h>
 #include <linux/of.h>
 #include <linux/of_device.h>
-#include <linux/qcom_scm.h>
+#include <linux/qcom_scm_caf.h>
 #include <linux/slab.h>
 
 #include "adreno.h"

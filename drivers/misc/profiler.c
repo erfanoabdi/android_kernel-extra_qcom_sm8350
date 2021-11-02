@@ -19,7 +19,7 @@
 #include <soc/qcom/profiler.h>
 
 #include <linux/qtee_shmbridge.h>
-#include <linux/qcom_scm.h>
+#include <linux/qcom_scm_caf.h>
 
 #define PROFILER_DEV			"profiler"
 

@@ -16,7 +16,7 @@
 #include <linux/uaccess.h>
 #include <linux/of.h>
 #include <linux/dma-buf.h>
-#include <linux/qcom_scm.h>
+#include <linux/qcom_scm_caf.h>
 #include <soc/qcom/qseecomi.h>
 #include <linux/qtee_shmbridge.h>
 

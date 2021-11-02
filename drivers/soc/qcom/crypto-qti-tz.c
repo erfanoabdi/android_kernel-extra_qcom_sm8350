@@ -6,7 +6,7 @@
  */
 
 #include <asm/cacheflush.h>
-#include <linux/qcom_scm.h>
+#include <linux/qcom_scm_caf.h>
 #include <linux/qtee_shmbridge.h>
 #include <linux/crypto-qti-common.h>
 #include <linux/module.h>

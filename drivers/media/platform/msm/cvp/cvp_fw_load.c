@@ -6,7 +6,7 @@
 #include <linux/of.h>
 #include <linux/pm_qos.h>
 #include <linux/platform_device.h>
-#include <linux/qcom_scm.h>
+#include <linux/qcom_scm_caf.h>
 #include "msm_cvp_debug.h"
 #include "cvp_comm_def.h"
 #include "cvp_core_hfi.h"

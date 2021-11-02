@@ -13,7 +13,7 @@
 #include <linux/mod_devicetable.h>
 #include <linux/of_platform.h>
 #include <linux/of_reserved_mem.h>
-#include <linux/qcom_scm.h>
+#include <linux/qcom_scm_caf.h>
 #include <linux/dma-mapping.h>
 #include <linux/msm_ion.h>
 #include <soc/qcom/qseecomi.h>

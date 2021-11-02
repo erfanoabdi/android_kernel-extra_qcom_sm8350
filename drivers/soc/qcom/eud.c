@@ -24,7 +24,7 @@
 #include <linux/clk.h>
 #include <linux/workqueue.h>
 #include <linux/power_supply.h>
-#include <linux/qcom_scm.h>
+#include <linux/qcom_scm_caf.h>
 
 #define EUD_ENABLE_CMD 1
 #define EUD_DISABLE_CMD 0

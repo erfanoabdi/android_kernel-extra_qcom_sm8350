@@ -11,7 +11,7 @@
 #include <linux/of_platform.h>
 #include <linux/seq_file.h>
 #include <linux/delay.h>
-#include <linux/qcom_scm.h>
+#include <linux/qcom_scm_caf.h>
 #include <linux/random.h>
 #include <linux/regulator/consumer.h>
 #include <soc/qcom/secure_buffer.h>

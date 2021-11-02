@@ -25,7 +25,7 @@
 #include <linux/cpu.h>
 #include <linux/spinlock.h>
 #include <linux/mutex.h>
-#include <linux/qcom_scm.h>
+#include <linux/qcom_scm_caf.h>
 #include <soc/qcom/jtag.h>
 #include <asm/smp_plat.h>
 #include <asm/etmv4x.h>

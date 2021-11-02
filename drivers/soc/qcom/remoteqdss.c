@@ -7,7 +7,7 @@
 #include <linux/module.h>
 #include <linux/slab.h>
 #include <linux/qtee_shmbridge.h>
-#include <linux/qcom_scm.h>
+#include <linux/qcom_scm_caf.h>
 #include <linux/debugfs.h>
 #include <linux/ratelimit.h>
 #include <linux/dma-direct.h>

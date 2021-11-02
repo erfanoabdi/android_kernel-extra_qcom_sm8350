@@ -9,7 +9,7 @@
 #include <linux/dma-mapping.h>
 #include <linux/module.h>
 #include <linux/types.h>
-#include <linux/qcom_scm.h>
+#include <linux/qcom_scm_caf.h>
 #include <linux/of.h>
 #include <linux/of_address.h>
 #include <linux/of_platform.h>

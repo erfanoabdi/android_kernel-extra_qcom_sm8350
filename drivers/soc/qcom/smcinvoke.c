@@ -24,7 +24,7 @@
 #include <linux/msm_ion.h>
 #include <linux/of_platform.h>
 
-#include <linux/qcom_scm.h>
+#include <linux/qcom_scm_caf.h>
 #include <asm/cacheflush.h>
 #include <soc/qcom/qseecomi.h>
 #include <linux/qtee_shmbridge.h>

@@ -21,7 +21,7 @@
 #include <linux/interconnect.h>
 #include <dt-bindings/interconnect/qcom,lahaina.h>
 #include <linux/dma-mapping.h>
-#include <linux/qcom_scm.h>
+#include <linux/qcom_scm_caf.h>
 
 #include <soc/qcom/subsystem_restart.h>
 #include <soc/qcom/ramdump.h>

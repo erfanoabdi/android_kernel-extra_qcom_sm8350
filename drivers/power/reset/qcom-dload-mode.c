@@ -13,7 +13,7 @@
 #include <linux/module.h>
 #include <linux/reboot.h>
 #include <linux/pm.h>
-#include <linux/qcom_scm.h>
+#include <linux/qcom_scm_caf.h>
 #include <soc/qcom/minidump.h>
 
 enum qcom_download_dest {

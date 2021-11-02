@@ -8,7 +8,7 @@
 #include <linux/mutex.h>
 #include <linux/slab.h>
 #include <linux/types.h>
-#include <linux/qcom_scm.h>
+#include <linux/qcom_scm_caf.h>
 #include <linux/arm-smccc.h>
 #include <linux/dma-mapping.h>
 

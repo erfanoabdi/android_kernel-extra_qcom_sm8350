@@ -17,7 +17,7 @@
 #include <linux/platform_device.h>
 #include <linux/wait.h>
 #include <linux/reboot.h>
-#include <linux/qcom_scm.h>
+#include <linux/qcom_scm_caf.h>
 #include <soc/qcom/minidump.h>
 #include <soc/qcom/watchdog.h>
 #include <linux/cpumask.h>

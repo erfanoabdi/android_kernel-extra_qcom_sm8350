@@ -17,7 +17,7 @@
 #include <linux/regulator/consumer.h>
 #include <linux/dma-mapping.h>
 #include <linux/highmem.h>
-#include <linux/qcom_scm.h>
+#include <linux/qcom_scm_caf.h>
 #include <soc/qcom/secure_buffer.h>
 #include <trace/events/trace_msm_pil_event.h>
 

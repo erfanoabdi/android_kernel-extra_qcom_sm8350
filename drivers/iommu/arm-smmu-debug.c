@@ -8,7 +8,7 @@
 #include <linux/device.h>
 #include "arm-smmu.h"
 #include "arm-smmu-debug.h"
-#include <linux/qcom_scm.h>
+#include <linux/qcom_scm_caf.h>
 
 
 u32 arm_smmu_debug_tbu_testbus_select(void __iomem *tbu_base,

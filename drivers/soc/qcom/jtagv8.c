@@ -23,7 +23,7 @@
 #include <linux/io.h>
 #include <linux/platform_device.h>
 #include <linux/bitops.h>
-#include <linux/qcom_scm.h>
+#include <linux/qcom_scm_caf.h>
 #include <soc/qcom/jtag.h>
 #ifdef CONFIG_ARM64
 #include <asm/debugv8.h>
