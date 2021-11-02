@@ -6,7 +6,7 @@
 #include <linux/bitfield.h>
 #include <linux/compat.h>
 #include <linux/io.h>
-#include <linux/iommu.h>
+#include <linux/iommu_caf.h>
 #include <linux/iopoll.h>
 #include <linux/of_platform.h>
 #include <linux/seq_file.h>

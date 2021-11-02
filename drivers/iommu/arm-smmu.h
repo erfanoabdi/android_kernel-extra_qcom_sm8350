@@ -15,8 +15,8 @@
 #include <linux/clk.h>
 #include <linux/device.h>
 #include <linux/io-64-nonatomic-hi-lo.h>
-#include <linux/io-pgtable.h>
-#include <linux/iommu.h>
+#include <linux/io-pgtable_caf.h>
+#include <linux/iommu_caf.h>
 #include <linux/mutex.h>
 #include <linux/spinlock.h>
 #include <linux/types.h>

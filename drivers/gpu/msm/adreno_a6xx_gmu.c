@@ -9,7 +9,7 @@
 #include <linux/firmware.h>
 #include <linux/interconnect.h>
 #include <linux/io.h>
-#include <linux/iommu.h>
+#include <linux/iommu_caf.h>
 #include <linux/of_platform.h>
 #include <linux/regulator/consumer.h>
 #include <linux/slab.h>
