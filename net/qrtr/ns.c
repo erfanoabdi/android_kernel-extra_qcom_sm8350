@@ -9,7 +9,7 @@
 
 #include <linux/ipc_logging.h>
 #include <linux/module.h>
-#include <linux/qrtr.h>
+#include <linux/qrtr_caf.h>
 #include <linux/workqueue.h>
 #include <linux/xarray.h>
 #include <net/sock.h>

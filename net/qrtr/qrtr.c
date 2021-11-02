@@ -6,7 +6,7 @@
 #include <linux/kthread.h>
 #include <linux/module.h>
 #include <linux/netlink.h>
-#include <linux/qrtr.h>
+#include <linux/qrtr_caf.h>
 #include <linux/termios.h>	/* For TIOCINQ/OUTQ */
 #include <linux/numa.h>
 #include <linux/spinlock.h>
