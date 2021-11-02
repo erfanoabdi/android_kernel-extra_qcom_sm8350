@@ -10,7 +10,7 @@
 #include <linux/notifier.h>
 #include <linux/platform_device.h>
 #include <soc/qcom/subsystem_notif.h>
-#include <linux/rpmsg/qcom_glink.h>
+#include <linux/rpmsg/qcom_glink_caf.h>
 #include <linux/rpmsg.h>
 #include <linux/ipc_logging.h>
 

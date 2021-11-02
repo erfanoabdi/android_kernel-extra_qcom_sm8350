@@ -11,7 +11,7 @@
 #include <linux/slab.h>
 #include <linux/sizes.h>
 #include <linux/soc/qcom/smem.h>
-#include <linux/rpmsg/qcom_glink.h>
+#include <linux/rpmsg/qcom_glink_caf.h>
 
 #include "qcom_glink_native.h"
 
