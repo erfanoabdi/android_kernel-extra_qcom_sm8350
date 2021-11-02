@@ -10,6 +10,7 @@
 #include <linux/slab.h>
 #include <linux/spinlock.h>
 #include <linux/types.h>
+#include <linux/mod_devicetable_caf.h>
 
 struct mhi_chan;
 struct mhi_event;

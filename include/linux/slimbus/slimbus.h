@@ -8,7 +8,7 @@
 #include <linux/module.h>
 #include <linux/device.h>
 #include <linux/mutex.h>
-#include <linux/mod_devicetable.h>
+#include <linux/mod_devicetable_caf.h>
 #include <linux/of_irq.h>
 
 /* Interfaces between SLIMbus manager drivers and SLIMbus infrastructure. */
@@ -639,7 +639,7 @@ struct slim_driver {
 	int (*reset_device)(struct slim_device *sldev);
 
 	struct device_driver		driver;
-	const struct slim_device_id	*id_table;
+	const struct slim_device_id_caf	*id_table;
 };
 #define to_slim_driver(d) container_of(d, struct slim_driver, driver)
 
@@ -1167,7 +1167,7 @@ extern struct slim_controller *slim_busnum_to_ctrl(u32 busnum);
 extern void slim_ctrl_add_boarddevs(struct slim_controller *ctrl);
 
 extern const
-struct slim_device_id *slim_get_device_id(const struct slim_device *sdev);
+struct slim_device_id_caf *slim_get_device_id(const struct slim_device *sdev);
 
 #if IS_ENABLED(CONFIG_SLIMBUS)
 /*

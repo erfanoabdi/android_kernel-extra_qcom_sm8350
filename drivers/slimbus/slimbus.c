@@ -15,6 +15,7 @@
 #include <linux/slab.h>
 #include <linux/of.h>
 #include <linux/of_irq.h>
+#include <linux/mod_devicetable_caf.h>
 
 #define SLIM_PORT_HDL(la, f, p) ((la)<<24 | (f) << 16 | (p))
 
@@ -48,7 +49,7 @@ static struct device_type slim_ctrl_type;
 	struct slim_msg_txn name = { rl, 0, mc, SLIM_MSG_DEST_BROADCAST, 0,\
 					len, 0, la, false, rbuf, wbuf, NULL, }
 
-static const struct slim_device_id *slim_match(const struct slim_device_id *id,
+static const struct slim_device_id_caf *slim_match(const struct slim_device_id_caf *id,
 					const struct slim_device *slim_dev)
 {
 	while (id->name[0]) {
@@ -59,7 +60,7 @@ static const struct slim_device_id *slim_match(const struct slim_device_id *id,
 	return NULL;
 }
 
-const struct slim_device_id *slim_get_device_id(const struct slim_device *sdev)
+const struct slim_device_id_caf *slim_get_device_id(const struct slim_device *sdev)
 {
 	const struct slim_driver *sdrv = to_slim_driver(sdev->dev.driver);
 

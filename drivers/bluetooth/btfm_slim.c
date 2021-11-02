@@ -20,6 +20,7 @@
 #include <sound/tlv.h>
 #include "btfm_slim.h"
 #include "btfm_slim_slave.h"
+#include <linux/mod_devicetable_caf.h>
 
 #define DELAY_FOR_PORT_OPEN_MS (200)
 
@@ -696,7 +697,7 @@ static int btfm_slim_remove(struct slim_device *slim)
 	return 0;
 }
 
-static const struct slim_device_id btfm_slim_id[] = {
+static const struct slim_device_id_caf btfm_slim_id[] = {
 	{SLIM_SLAVE_COMPATIBLE_STR, 0},
 	{}
 };
