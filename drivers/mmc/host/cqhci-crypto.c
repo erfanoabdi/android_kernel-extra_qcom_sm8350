@@ -15,7 +15,7 @@
 
 #include <crypto/algapi.h>
 #include "cqhci-crypto.h"
-#include "../core/queue.h"
+#include "core/queue.h"
 
 static bool cqhci_cap_idx_valid(struct cqhci_host *host, unsigned int cap_idx)
 {

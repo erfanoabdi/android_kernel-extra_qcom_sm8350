@@ -3,7 +3,7 @@
  * Copyright (c) 2019-2021, The Linux Foundation. All rights reserved.
  */
 
-#include "../sched.h"
+#include "sched.h"
 #include "../../../fs/proc/internal.h"
 
 #include "walt.h"

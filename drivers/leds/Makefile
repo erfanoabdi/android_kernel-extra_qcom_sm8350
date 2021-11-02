@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: GPL-2.0
 
+ccflags-y += -I$(srctree)/drivers/leds/
+
 obj-$(CONFIG_LEDS_AW2016)		+= leds-aw2016.o
 obj-$(CONFIG_LEDS_QCOM_CLK)		+= leds-qcom-clk.o
 obj-$(CONFIG_LEDS_QPNP_FLASH_V2)        += leds-qpnp-flash-v2.o

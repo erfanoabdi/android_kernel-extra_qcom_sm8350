@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: GPL-2.0-only
 ccflags-y += -I$(src)
+ccflags-y += -I$(srctree)/drivers/gpu/vga/
 
 obj-$(CONFIG_QCOM_KGSL) += msm_kgsl.o
 

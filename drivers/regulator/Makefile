@@ -3,6 +3,8 @@
 # Makefile for regulator drivers.
 #
 
+ccflags-y += -I$(srctree)/drivers/regulator/
+
 obj-$(CONFIG_REGULATOR_PROXY_CONSUMER) += proxy-consumer.o
 obj-$(CONFIG_REGULATOR_QCOM_PM8008) += qcom_pm8008-regulator.o
 obj-$(CONFIG_REGULATOR_QPNP_AMOLED) += qpnp-amoled-regulator.o

@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: GPL-2.0
 # Qualcomm pin control drivers
 
+ccflags-y += -I$(srctree)/drivers/pinctrl/qcom/
+
 obj-$(CONFIG_PINCTRL_MSM)	+= pinctrl-msm.o
 obj-$(CONFIG_PINCTRL_QCOM_SPMI_PMIC) += pinctrl-spmi-gpio.o
 obj-$(CONFIG_PINCTRL_QCOM_SPMI_PMIC) += pinctrl-spmi-mpp.o

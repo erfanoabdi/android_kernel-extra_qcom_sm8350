@@ -3,6 +3,8 @@
 # Makefile for USB Host Controller Drivers
 #
 
+ccflags-y += -I$(srctree)/drivers/usb/host/
+
 # tell define_trace.h where to find the xhci trace header
 CFLAGS_xhci-trace.o := -I$(src)
 
