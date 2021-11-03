@@ -2,6 +2,8 @@
 #
 # Makefile for physical layer USB drivers
 #
+
+obj-$(CONFIG_NOP_USB_XCEIV)		+= phy-generic.o
 obj-$(CONFIG_USB_QCOM_EMU_PHY)		+= phy-qcom-emu.o
 obj-$(CONFIG_MSM_QUSB_PHY)		+= phy-msm-qusb-v2.o phy-msm-qusb.o
 obj-$(CONFIG_USB_MSM_SSPHY_QMP)		+= phy-msm-ssusb-qmp.o
