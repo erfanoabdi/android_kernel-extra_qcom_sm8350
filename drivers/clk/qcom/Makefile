@@ -32,6 +32,7 @@ obj-$(CONFIG_MSM_CAMCC_LAHAINA) += camcc-lahaina.o
 obj-$(CONFIG_MSM_VIDEOCC_LAHAINA) += videocc-lahaina.o
 obj-$(CONFIG_QCS_CMN_BLK_PLL) += cmn-blk-pll.o
 obj-$(CONFIG_QCS_DEBUGCC_404) += debugcc-qcs404.o
+obj-$(CONFIG_QCOM_CLK_RPMH) += clk-rpmh.o
 obj-$(CONFIG_SA_DEBUGCC_DIREWOLF) += debugcc-direwolf.o
 obj-$(CONFIG_SA_GCC_DIREWOLF) += gcc-direwolf.o
 obj-$(CONFIG_SC_CAMCC_SHRIKE) += camcc-scshrike.o
