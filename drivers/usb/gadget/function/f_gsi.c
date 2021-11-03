@@ -7,6 +7,8 @@
 #include "f_gsi.h"
 #include "rndis.h"
 
+#define USB_CDC_RESET_FUNCTION			0x05
+
 static struct usb_gsi_debugfs {
 	struct dentry *debugfs_root;
 	bool qti_packet_debug;

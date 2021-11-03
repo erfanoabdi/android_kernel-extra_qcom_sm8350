@@ -10,7 +10,7 @@
 #include <linux/device.h>
 #include <linux/errno.h>
 #include <linux/usb/ch9.h>
-#include <linux/usb/gadget.h>
+#include <linux/usb/gadget_caf.h>
 #include <linux/usb/video.h>
 
 #include <media/v4l2-dev.h>

@@ -14,7 +14,7 @@
 #include <linux/ctype.h>
 #include <linux/usb/ch9.h>
 #include <linux/usb/composite.h>
-#include <linux/usb/gadget.h>
+#include <linux/usb/gadget_caf.h>
 #include <linux/usb/storage.h>
 #include <scsi/scsi_tcq.h>
 #include <target/target_core_base.h>

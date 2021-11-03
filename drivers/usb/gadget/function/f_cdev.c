@@ -32,7 +32,7 @@
 #include <linux/debugfs.h>
 #include <linux/cdev.h>
 #include <linux/spinlock.h>
-#include <linux/usb/gadget.h>
+#include <linux/usb/gadget_caf.h>
 #include <linux/usb/cdc.h>
 #include <linux/usb/composite.h>
 #include <linux/module.h>

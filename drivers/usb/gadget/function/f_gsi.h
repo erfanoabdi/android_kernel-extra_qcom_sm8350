@@ -12,7 +12,7 @@
 #include <uapi/linux/usb/cdc.h>
 #include <linux/usb/ch9.h>
 #include <linux/usb/composite.h>
-#include <linux/usb/gadget.h>
+#include <linux/usb/gadget_caf.h>
 #include <uapi/linux/usb/usb_ctrl_qti.h>
 #include <linux/usb/dwc3-msm.h>
 #include <linux/etherdevice.h>
