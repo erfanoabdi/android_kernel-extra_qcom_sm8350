@@ -40,6 +40,7 @@ obj-y	+= power/
 obj-y	+= pwm/
 obj-y	+= regulator/
 obj-y	+= rpmsg/
+obj-y	+= rtc/
 obj-y	+= scsi/
 obj-y	+= slimbus/
 obj-y	+= soc/
