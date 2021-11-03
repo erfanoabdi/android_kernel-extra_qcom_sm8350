@@ -19,7 +19,7 @@
 #include <linux/regmap.h>
 #include <linux/slab.h>
 
-#include <dt-bindings/iio/qcom,spmi-vadc.h>
+#include <dt-bindings/iio/qcom,spmi-vadc_caf.h>
 #include "qcom-vadc-common.h"
 
 #define ADC5_USR_REVISION1			0x0
