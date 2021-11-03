@@ -1,3 +1,4 @@
+obj-y	+= base/
 obj-y	+= block/
 obj-y	+= bluetooth/
 obj-y	+= bus/
