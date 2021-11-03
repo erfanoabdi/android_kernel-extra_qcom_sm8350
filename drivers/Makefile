@@ -10,6 +10,7 @@ obj-y	+= devfreq/
 obj-y	+= dma-buf/
 obj-y	+= dma/
 obj-y	+= edac/
+obj-y	+= extcon/
 obj-y	+= firmware/
 obj-y	+= gpu/
 obj-y	+= hid/
