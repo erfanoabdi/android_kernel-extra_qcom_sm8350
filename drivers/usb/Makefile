@@ -8,3 +8,4 @@ obj-y		+= misc/ host/
 obj-$(CONFIG_USB_PD)		+= pd/
 obj-$(CONFIG_USB_SUPPORT)	+= phy/
 obj-$(CONFIG_TYPEC)		+= typec/
+obj-$(CONFIG_USB_GADGET)	+= gadget/
