@@ -16,6 +16,7 @@ obj-y	+= firmware/
 obj-y	+= gpu/
 obj-y	+= hid/
 obj-y	+= hwmon/
+obj-y	+= hwspinlock/
 obj-y	+= i2c/
 obj-y	+= i3c/
 obj-y	+= iio/
