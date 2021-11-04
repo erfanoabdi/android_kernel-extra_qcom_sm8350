@@ -13,7 +13,7 @@
 #include <linux/random.h>
 #include <linux/slab.h>
 #include <linux/wait.h>
-#include <linux/mhi.h>
+#include <linux/mhi_caf.h>
 #include "mhi_internal.h"
 
 static struct dentry *mhi_dbgfs_dir;

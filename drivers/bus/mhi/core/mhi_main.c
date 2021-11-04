@@ -11,7 +11,7 @@
 #include <linux/module.h>
 #include <linux/skbuff.h>
 #include <linux/slab.h>
-#include <linux/mhi.h>
+#include <linux/mhi_caf.h>
 #include "mhi_internal.h"
 
 static char *mhi_generic_sfr = "unknown reason";

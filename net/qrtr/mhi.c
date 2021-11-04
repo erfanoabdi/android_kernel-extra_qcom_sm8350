@@ -4,7 +4,7 @@
 #include <linux/module.h>
 #include <linux/skbuff.h>
 #include <linux/mod_devicetable_caf.h>
-#include <linux/mhi.h>
+#include <linux/mhi_caf.h>
 #include <net/sock.h>
 #include <linux/of.h>
 

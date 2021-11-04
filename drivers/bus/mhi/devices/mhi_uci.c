@@ -16,7 +16,7 @@
 #include <linux/types.h>
 #include <linux/wait.h>
 #include <linux/uaccess.h>
-#include <linux/mhi.h>
+#include <linux/mhi_caf.h>
 
 #define DEVICE_NAME "mhi"
 #define MHI_UCI_DRIVER_NAME "mhi_uci"

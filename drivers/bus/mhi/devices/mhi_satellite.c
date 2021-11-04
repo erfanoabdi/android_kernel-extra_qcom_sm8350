@@ -15,7 +15,7 @@
 #include <linux/types.h>
 #include <linux/uaccess.h>
 #include <linux/wait.h>
-#include <linux/mhi.h>
+#include <linux/mhi_caf.h>
 
 #define MHI_SAT_DRIVER_NAME "mhi_satellite"
 

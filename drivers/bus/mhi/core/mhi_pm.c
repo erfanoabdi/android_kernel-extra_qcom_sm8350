@@ -13,7 +13,7 @@
 #include <linux/msm_rtb.h>
 #include <linux/slab.h>
 #include <linux/wait.h>
-#include <linux/mhi.h>
+#include <linux/mhi_caf.h>
 #include "mhi_internal.h"
 
 static void mhi_special_events_pending(struct mhi_controller *mhi_cntrl);

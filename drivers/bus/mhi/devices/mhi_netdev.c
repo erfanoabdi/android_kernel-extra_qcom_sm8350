@@ -15,7 +15,7 @@
 #include <linux/of_device.h>
 #include <linux/rtnetlink.h>
 #include <linux/kthread.h>
-#include <linux/mhi.h>
+#include <linux/mhi_caf.h>
 
 #define MHI_NETDEV_DRIVER_NAME "mhi_netdev"
 #define WATCHDOG_TIMEOUT (30 * HZ)

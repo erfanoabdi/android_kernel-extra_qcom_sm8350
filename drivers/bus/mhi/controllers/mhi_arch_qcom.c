@@ -16,7 +16,7 @@
 #include <linux/pm_runtime.h>
 #include <linux/slab.h>
 #include <linux/suspend.h>
-#include <linux/mhi.h>
+#include <linux/mhi_caf.h>
 #include "mhi_qcom.h"
 
 struct arch_info {

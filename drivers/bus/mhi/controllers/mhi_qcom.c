@@ -14,7 +14,7 @@
 #include <linux/pm_runtime.h>
 #include <linux/slab.h>
 #include <linux/uaccess.h>
-#include <linux/mhi.h>
+#include <linux/mhi_caf.h>
 #include "mhi_qcom.h"
 
 struct firmware_info {

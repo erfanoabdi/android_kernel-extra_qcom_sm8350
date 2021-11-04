@@ -5,7 +5,7 @@
 #define _CNSS_PCI_H
 
 #include <linux/iommu.h>
-#include <linux/mhi.h>
+#include <linux/mhi_caf.h>
 #if IS_ENABLED(CONFIG_PCI_MSM)
 #include <linux/msm_pcie.h>
 #endif

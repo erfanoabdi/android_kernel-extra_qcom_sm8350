@@ -12,7 +12,7 @@
 #include <linux/slab.h>
 #include <linux/termios.h>
 #include <linux/wait.h>
-#include <linux/mhi.h>
+#include <linux/mhi_caf.h>
 #include "mhi_internal.h"
 
 struct dtr_ctrl_msg {
