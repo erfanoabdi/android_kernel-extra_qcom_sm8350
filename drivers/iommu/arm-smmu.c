@@ -25,7 +25,12 @@
 #include <linux/dma-iommu.h>
 #include <linux/dma-mapping.h>
 #include <linux/dma-mapping-fast.h>
+#include <linux/version.h>
+#if (LINUX_VERSION_CODE <= KERNEL_VERSION(5, 4, 0))
 #include <linux/dma-noncoherent.h>
+#else
+#include <linux/dma-map-ops.h>
+#endif
 #include <linux/err.h>
 #include <linux/interrupt.h>
 #include <linux/io.h>

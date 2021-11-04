@@ -3,7 +3,12 @@
  * Copyright (c) 2015-2020, The Linux Foundation. All rights reserved.
  */
 
+#include <linux/version.h>
+#if (LINUX_VERSION_CODE <= KERNEL_VERSION(5, 4, 0))
 #include <linux/dma-noncoherent.h>
+#else
+#include <linux/dma-map-ops.h>
+#endif
 #include <linux/kernel.h>
 #include <linux/kref.h>
 #include <linux/slab.h>

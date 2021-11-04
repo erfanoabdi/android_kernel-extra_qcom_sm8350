@@ -18,7 +18,12 @@
 #include <linux/soc/qcom/qmi.h>
 #include <linux/iommu.h>
 #include <linux/dma-mapping.h>
+#include <linux/version.h>
+#if (LINUX_VERSION_CODE <= KERNEL_VERSION(5, 4, 0))
 #include <linux/dma-noncoherent.h>
+#else
+#include <linux/dma-map-ops.h>
+#endif
 #include <linux/platform_device.h>
 #include <linux/usb/audio-v3.h>
 #include <linux/usb/xhci-sec.h>
