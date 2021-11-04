@@ -1606,7 +1606,7 @@ static int qseecom_register_listener(struct qseecom_dev_handle *data,
 		pr_err("qseecom_set_sb_memory failed for listener %d, size %d\n",
 				rcvd_lstnr.listener_id, rcvd_lstnr.sb_size);
 		__qseecom_free_tzbuf(&new_entry->sglistinfo_shm);
-		kzfree(new_entry);
+		kfree_sensitive(new_entry);
 		return -ENOMEM;
 	}
 
@@ -1671,7 +1671,7 @@ exit:
 	}
 	__qseecom_free_tzbuf(&ptr_svc->sglistinfo_shm);
 	list_del(&ptr_svc->list);
-	kzfree(ptr_svc);
+	kfree_sensitive(ptr_svc);
 
 	data->released = true;
 	pr_debug("Service %d is unregistered\n", data->listener.id);
@@ -1750,10 +1750,10 @@ static void __qseecom_processing_pending_lsnr_unregister(void)
 				pr_err("invalid listener %d\n",
 					entry->data->listener.id);
 			__qseecom_free_tzbuf(&entry->data->sglistinfo_shm);
-			kzfree(entry->data);
+			kfree_sensitive(entry->data);
 		}
 		list_del(pos);
-		kzfree(entry);
+		kfree_sensitive(entry);
 	}
 	mutex_unlock(&listener_access_lock);
 	wake_up_interruptible(&qseecom.register_lsnr_pending_wq);
@@ -3017,7 +3017,7 @@ static int qseecom_load_app(struct qseecom_dev_handle *data, void __user *argp)
 			list_del(&entry->list);
 			spin_unlock_irqrestore(
 				&qseecom.registered_app_list_lock, flags);
-			kzfree(entry);
+			kfree_sensitive(entry);
 		}
 	}
 
@@ -3168,7 +3168,7 @@ static int qseecom_unload_app(struct qseecom_dev_handle *data,
 		list_del(&ptr_app->list);
 		spin_unlock_irqrestore(&qseecom.registered_app_list_lock,
 					flags);
-		kzfree(ptr_app);
+		kfree_sensitive(ptr_app);
 	}
 
 unload_exit:
@@ -3251,10 +3251,10 @@ static void __qseecom_processing_pending_unload_app(void)
 			mutex_unlock(&app_access_lock);
 			mutex_lock(&unload_app_pending_list_lock);
 			__qseecom_free_tzbuf(&entry->data->sglistinfo_shm);
-			kzfree(entry->data);
+			kfree_sensitive(entry->data);
 		}
 		list_del(pos);
-		kzfree(entry);
+		kfree_sensitive(entry);
 	}
 	mutex_unlock(&unload_app_pending_list_lock);
 }
@@ -5228,9 +5228,9 @@ int qseecom_shutdown_app(struct qseecom_handle **handle)
 			__qseecom_free_coherent_buf(data->client.sb_length,
 				data->client.sb_virt, data->client.sb_phys);
 		__qseecom_free_tzbuf(&data->sglistinfo_shm);
-		kzfree(data);
-		kzfree(*handle);
-		kzfree(kclient);
+		kfree_sensitive(data);
+		kfree_sensitive(*handle);
+		kfree_sensitive(kclient);
 		*handle = NULL;
 	}
 	__wakeup_unload_app_kthread();
@@ -6609,7 +6609,7 @@ static int qseecom_create_key(struct qseecom_dev_handle *data,
 	}
 
 free_buf:
-	kzfree(ce_hw);
+	kfree_sensitive(ce_hw);
 	return ret;
 }
 
@@ -6723,7 +6723,7 @@ static int qseecom_wipe_key(struct qseecom_dev_handle *data,
 	}
 
 free_buf:
-	kzfree(ce_hw);
+	kfree_sensitive(ce_hw);
 	return ret;
 }
 
@@ -9300,7 +9300,7 @@ static void qseecom_release_ce_data(void)
 	if (qseecom.ce_info.fde) {
 		pce_info_use = qseecom.ce_info.fde;
 		for (i = 0; i < qseecom.ce_info.num_fde; i++) {
-			kzfree(pce_info_use->ce_pipe_entry);
+			kfree_sensitive(pce_info_use->ce_pipe_entry);
 			pce_info_use++;
 		}
 		kfree(qseecom.ce_info.fde);
@@ -9308,7 +9308,7 @@ static void qseecom_release_ce_data(void)
 	if (qseecom.ce_info.pfe) {
 		pce_info_use = qseecom.ce_info.pfe;
 		for (i = 0; i < qseecom.ce_info.num_pfe; i++) {
-			kzfree(pce_info_use->ce_pipe_entry);
+			kfree_sensitive(pce_info_use->ce_pipe_entry);
 			pce_info_use++;
 		}
 		kfree(qseecom.ce_info.pfe);
@@ -9674,7 +9674,7 @@ static int qseecom_remove(struct platform_device *pdev)
 		/* Break the loop if client handle is NULL */
 		if (!kclient->handle) {
 			list_del(&kclient->list);
-			kzfree(kclient);
+			kfree_sensitive(kclient);
 			break;
 		}
 
@@ -9683,9 +9683,9 @@ static int qseecom_remove(struct platform_device *pdev)
 		ret = qseecom_unload_app(kclient->handle->dev, false);
 		mutex_unlock(&app_access_lock);
 		if (!ret) {
-			kzfree(kclient->handle->dev);
-			kzfree(kclient->handle);
-			kzfree(kclient);
+			kfree_sensitive(kclient->handle->dev);
+			kfree_sensitive(kclient->handle);
+			kfree_sensitive(kclient);
 		}
 	}
 

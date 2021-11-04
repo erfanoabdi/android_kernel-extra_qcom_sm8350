@@ -261,7 +261,7 @@ static int qcedev_release(struct inode *inode, struct file *file)
 	if (qcedev_unmap_all_buffers(handle))
 		pr_err("%s: failed to unmap all ion buffers\n", __func__);
 
-	kzfree(handle);
+	kfree_sensitive(handle);
 	file->private_data = NULL;
 	return 0;
 }
