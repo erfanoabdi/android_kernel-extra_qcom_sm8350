@@ -5,6 +5,7 @@
 
 #include "cvp_private.h"
 #include "cvp_hfi_api.h"
+#include <linux/compat.h>
 
 static int _get_pkt_hdr_from_user(struct cvp_kmd_arg __user *up,
 		struct cvp_hal_session_cmd_pkt *pkt_hdr)
