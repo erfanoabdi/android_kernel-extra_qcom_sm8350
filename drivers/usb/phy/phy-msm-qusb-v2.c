@@ -1082,7 +1082,7 @@ static int qusb_phy_probe(struct platform_device *pdev)
 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
 							"efuse_addr");
 	if (res) {
-		qphy->efuse_reg = devm_ioremap_nocache(dev, res->start,
+		qphy->efuse_reg = devm_ioremap(dev, res->start,
 							resource_size(res));
 		if (!IS_ERR_OR_NULL(qphy->efuse_reg)) {
 			ret = of_property_read_u32(dev->of_node,

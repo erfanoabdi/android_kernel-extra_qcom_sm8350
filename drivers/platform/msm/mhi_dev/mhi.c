@@ -2674,7 +2674,7 @@ static int mhi_dev_cache_host_cfg(struct mhi_dev *mhi)
 
 		if (!mhi->use_ipa || !mhi->use_edma) {
 			mhi->ctrl_base.device_va =
-				(uintptr_t) devm_ioremap_nocache(&pdev->dev,
+				(uintptr_t) devm_ioremap(&pdev->dev,
 				mhi->ctrl_base.device_pa,
 				mhi->ctrl_base.size);
 			if (!mhi->ctrl_base.device_va) {
@@ -3959,7 +3959,7 @@ static int get_device_tree_data(struct platform_device *pdev)
 	}
 
 	mhi->mmio_base_pa_addr = res_mem->start;
-	mhi->mmio_base_addr = ioremap_nocache(res_mem->start, MHI_1K_SIZE);
+	mhi->mmio_base_addr = ioremap(res_mem->start, MHI_1K_SIZE);
 	if (!mhi->mmio_base_addr) {
 		pr_err("Failed to IO map MMIO registers\n");
 		return -EINVAL;

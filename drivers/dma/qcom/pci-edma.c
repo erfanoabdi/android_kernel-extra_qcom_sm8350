@@ -1109,7 +1109,7 @@ int qcom_edma_init(struct device *dev)
 		return -EINVAL;
 	}
 
-	e_dev->base = devm_ioremap_nocache(e_dev->dev, e_dev->base_phys,
+	e_dev->base = devm_ioremap(e_dev->dev, e_dev->base_phys,
 					e_dev->base_size);
 	if (!e_dev->base) {
 		pr_err("EDMA: failed to remap eDMA base register\n");

@@ -118,7 +118,7 @@ static int mhi_init_pci_dev(struct mhi_controller *mhi_cntrl)
 
 	mhi_cntrl->base_addr = pci_resource_start(pci_dev, mhi_dev->resn);
 	len = pci_resource_len(pci_dev, mhi_dev->resn);
-	mhi_cntrl->regs = ioremap_nocache(mhi_cntrl->base_addr, len);
+	mhi_cntrl->regs = ioremap(mhi_cntrl->base_addr, len);
 	if (!mhi_cntrl->regs) {
 		MHI_CNTRL_ERR("Error ioremap region\n");
 		goto error_ioremap;

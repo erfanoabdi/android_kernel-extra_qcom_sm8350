@@ -773,7 +773,7 @@ static int msm_hsphy_probe(struct platform_device *pdev)
 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
 							"phy_rcal_reg");
 	if (res) {
-		phy->phy_rcal_reg = devm_ioremap_nocache(dev,
+		phy->phy_rcal_reg = devm_ioremap(dev,
 					res->start, resource_size(res));
 		if (IS_ERR(phy->phy_rcal_reg)) {
 			dev_err(dev, "couldn't ioremap phy_rcal_reg\n");

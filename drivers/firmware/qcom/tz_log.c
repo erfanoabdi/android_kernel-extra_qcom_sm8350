@@ -1409,7 +1409,7 @@ static int __update_hypdbg_base(struct platform_device *pdev,
 	tzdbg.hyp_debug_rw_buf_size = readl_relaxed(virt_iobase +
 					hyp_size_offset);
 
-	tzdbg.hyp_virt_iobase = devm_ioremap_nocache(&pdev->dev,
+	tzdbg.hyp_virt_iobase = devm_ioremap(&pdev->dev,
 					hypdiag_phy_iobase,
 					tzdbg.hyp_debug_rw_buf_size);
 	if (!tzdbg.hyp_virt_iobase) {
@@ -1512,7 +1512,7 @@ static int tz_log_probe(struct platform_device *pdev)
 	/*
 	 * Map address that stores the physical location diagnostic data
 	 */
-	virt_iobase = devm_ioremap_nocache(&pdev->dev, resource->start,
+	virt_iobase = devm_ioremap(&pdev->dev, resource->start,
 				debug_rw_buf_size);
 	if (!virt_iobase) {
 		dev_err(&pdev->dev,
@@ -1550,7 +1550,7 @@ static int tz_log_probe(struct platform_device *pdev)
 	 * Map the diagnostic information area if encryption is disabled
 	 */
 	if (!tzdbg.is_encrypted_log_enabled) {
-		tzdbg.virt_iobase = devm_ioremap_nocache(&pdev->dev,
+		tzdbg.virt_iobase = devm_ioremap(&pdev->dev,
 				tzdiag_phy_iobase, debug_rw_buf_size);
 
 		if (!tzdbg.virt_iobase) {

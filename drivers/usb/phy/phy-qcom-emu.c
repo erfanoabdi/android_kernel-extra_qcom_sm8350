@@ -104,7 +104,7 @@ static int qcusb_emu_phy_probe(struct platform_device *pdev)
 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
 							"qscratch_base");
 	if (res) {
-		qphy->qscratch_base = devm_ioremap_nocache(dev, res->start,
+		qphy->qscratch_base = devm_ioremap(dev, res->start,
 						resource_size(res));
 		if (IS_ERR(qphy->qscratch_base)) {
 			dev_dbg(dev, "error mapping qscratch\n");

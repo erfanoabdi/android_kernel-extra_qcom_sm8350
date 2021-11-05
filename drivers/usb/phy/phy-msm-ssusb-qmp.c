@@ -982,7 +982,7 @@ static int msm_ssphy_qmp_probe(struct platform_device *pdev)
 	 * For USB QMP DP combo PHY, common set of registers shall be accessed
 	 * by DP driver as well.
 	 */
-	phy->base = devm_ioremap_nocache(dev, res->start, resource_size(res));
+	phy->base = devm_ioremap(dev, res->start, resource_size(res));
 	if (IS_ERR_OR_NULL(phy->base)) {
 		ret = PTR_ERR(phy->base);
 		goto err;

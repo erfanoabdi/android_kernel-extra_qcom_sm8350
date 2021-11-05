@@ -2851,7 +2851,7 @@ static int qce_sps_get_bam(struct qce_device *pce_dev)
 	}
 	pbam->cnt = 1;
 	pbam->bam_mem = pce_dev->bam_mem;
-	pbam->bam_iobase = ioremap_nocache(pce_dev->bam_mem,
+	pbam->bam_iobase = ioremap(pce_dev->bam_mem,
 					pce_dev->bam_mem_size);
 	if (!pbam->bam_iobase) {
 		kfree(pbam);
@@ -5726,7 +5726,7 @@ static int __qce_get_device_tree_data(struct platform_device *pdev,
 							"crypto-base");
 	if (resource) {
 		pce_dev->phy_iobase = resource->start;
-		pce_dev->iobase = ioremap_nocache(resource->start,
+		pce_dev->iobase = ioremap(resource->start,
 					resource_size(resource));
 		if (!pce_dev->iobase) {
 			pr_err("Can not map CRYPTO io memory\n");

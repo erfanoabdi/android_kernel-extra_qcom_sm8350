@@ -335,7 +335,7 @@ static int ddr_stats_probe(struct platform_device *pdev)
 					      "offset_addr");
 	if (offset) {
 		/* Remap the ddr stats pointer */
-		phys_ptr = ioremap_nocache(offset->start, SZ_4);
+		phys_ptr = ioremap(offset->start, SZ_4);
 		if (!phys_ptr) {
 			pr_err("Failed to ioremap offset address\n");
 			return -ENODEV;

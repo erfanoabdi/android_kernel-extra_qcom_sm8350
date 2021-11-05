@@ -908,7 +908,7 @@ static int qmp_parse_ipc(struct platform_device *pdev)
 		return -ENODEV;
 	}
 
-	mdev->tx_irq_reg = devm_ioremap_nocache(&pdev->dev, res->start,
+	mdev->tx_irq_reg = devm_ioremap(&pdev->dev, res->start,
 						resource_size(res));
 	if (!mdev->tx_irq_reg) {
 		pr_err("%s: unable to map tx irq reg\n", __func__);
@@ -968,7 +968,7 @@ static int qmp_edge_init(struct platform_device *pdev)
 	}
 
 	mdev->dev = &pdev->dev;
-	mdev->msgram = devm_ioremap_nocache(&pdev->dev, msgram_r->start,
+	mdev->msgram = devm_ioremap(&pdev->dev, msgram_r->start,
 						resource_size(msgram_r));
 	if (!mdev->msgram)
 		return -EIO;

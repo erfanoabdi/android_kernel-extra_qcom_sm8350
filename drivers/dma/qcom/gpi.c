@@ -3009,7 +3009,7 @@ static int gpi_probe(struct platform_device *pdev)
 		GPI_ERR(gpi_dev, "missing 'reg' DT node\n");
 		return -EINVAL;
 	}
-	gpi_dev->regs = devm_ioremap_nocache(gpi_dev->dev, gpi_dev->res->start,
+	gpi_dev->regs = devm_ioremap(gpi_dev->dev, gpi_dev->res->start,
 					     resource_size(gpi_dev->res));
 	if (!gpi_dev->regs) {
 		GPI_ERR(gpi_dev, "IO remap failed\n");

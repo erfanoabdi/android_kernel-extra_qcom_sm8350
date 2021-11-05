@@ -1000,7 +1000,7 @@ static int qusb_phy_probe(struct platform_device *pdev)
 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
 							"tune2_efuse_addr");
 	if (res) {
-		qphy->tune2_efuse_reg = devm_ioremap_nocache(dev, res->start,
+		qphy->tune2_efuse_reg = devm_ioremap(dev, res->start,
 							resource_size(res));
 		if (!IS_ERR_OR_NULL(qphy->tune2_efuse_reg)) {
 			ret = of_property_read_u32(dev->of_node,
@@ -1035,7 +1035,7 @@ static int qusb_phy_probe(struct platform_device *pdev)
 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
 							"ref_clk_addr");
 	if (res) {
-		qphy->ref_clk_base = devm_ioremap_nocache(dev,
+		qphy->ref_clk_base = devm_ioremap(dev,
 				res->start, resource_size(res));
 		if (IS_ERR(qphy->ref_clk_base)) {
 			dev_dbg(dev, "ref_clk_address is not available.\n");
@@ -1062,7 +1062,7 @@ static int qusb_phy_probe(struct platform_device *pdev)
 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
 						"tcsr_clamp_dig_n_1p8");
 	if (res) {
-		qphy->tcsr_clamp_dig_n = devm_ioremap_nocache(dev,
+		qphy->tcsr_clamp_dig_n = devm_ioremap(dev,
 				res->start, resource_size(res));
 		if (IS_ERR(qphy->tcsr_clamp_dig_n)) {
 			dev_err(dev, "err reading tcsr_clamp_dig_n\n");
@@ -1091,7 +1091,7 @@ static int qusb_phy_probe(struct platform_device *pdev)
 			return -ENOENT;
 		}
 
-		qphy->tcsr_conn_box_spare = devm_ioremap_nocache(dev,
+		qphy->tcsr_conn_box_spare = devm_ioremap(dev,
 						res->start, resource_size(res));
 		if (IS_ERR(qphy->tcsr_conn_box_spare)) {
 			dev_err(dev, "err reading tcsr_conn_box_spare\n");

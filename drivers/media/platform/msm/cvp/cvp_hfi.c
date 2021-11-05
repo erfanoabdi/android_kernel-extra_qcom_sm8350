@@ -3215,7 +3215,7 @@ static int __init_regs_and_interrupts(struct iris_hfi_device *device,
 
 	hal->irq = res->irq;
 	hal->firmware_base = res->firmware_base;
-	hal->register_base = devm_ioremap_nocache(&res->pdev->dev,
+	hal->register_base = devm_ioremap(&res->pdev->dev,
 			res->register_base, res->register_size);
 	hal->register_size = res->register_size;
 	if (!hal->register_base) {

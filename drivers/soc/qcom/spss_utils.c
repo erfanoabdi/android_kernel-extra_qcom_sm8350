@@ -29,7 +29,7 @@
 #include <linux/platform_device.h> /* platform_driver_register() */
 #include <linux/of.h>       /* of_property_count_strings() */
 #include <linux/of_address.h>   /* of_address_to_resource() */
-#include <linux/io.h>       /* ioremap_nocache() */
+#include <linux/io.h>       /* ioremap() */
 #include <linux/notifier.h>
 #include <linux/sizes.h>    /* SZ_4K */
 #include <linux/uaccess.h>  /* copy_from_user() */
@@ -213,7 +213,7 @@ static ssize_t spss_debug_reg_show(struct device *dev,
 
 	pr_debug("spss_debug_reg_addr [0x%x].\n", spss_debug_reg_addr);
 
-	spss_debug_reg = ioremap_nocache(spss_debug_reg_addr, sizeof(u32)*2);
+	spss_debug_reg = ioremap(spss_debug_reg_addr, sizeof(u32)*2);
 
 	if (!spss_debug_reg) {
 		pr_err("can't map debug reg addr\n");
@@ -538,7 +538,7 @@ static long spss_utils_ioctl(struct file *file,
 		is_iar_active = true;
 
 		if (cmac_mem == NULL) {
-			cmac_mem = ioremap_nocache(cmac_mem_addr, CMAC_MEM_SIZE);
+			cmac_mem = ioremap(cmac_mem_addr, CMAC_MEM_SIZE);
 			if (!cmac_mem) {
 				pr_err("can't map cmac_mem.\n");
 				return -EFAULT;
@@ -701,7 +701,7 @@ static int get_pil_size(phys_addr_t base_addr)
 	u32 pil_size = 0;
 
 	spss_code_size_addr = base_addr + SPSS_RMB_CODE_SIZE_REG_OFFSET;
-	spss_code_size_reg = ioremap_nocache(spss_code_size_addr, sizeof(u32));
+	spss_code_size_reg = ioremap(spss_code_size_addr, sizeof(u32));
 	if (!spss_code_size_reg) {
 		pr_err("can't map spss_code_size_addr\n");
 		return -EINVAL;
@@ -797,14 +797,14 @@ static int spss_parse_dt(struct device_node *node)
 	pr_debug("spss fuse2 addr [0x%x] bit [%d]\n",
 		(int) spss_fuse2_addr, (int) spss_fuse2_bit);
 
-	spss_fuse1_reg = ioremap_nocache(spss_fuse1_addr, sizeof(u32));
+	spss_fuse1_reg = ioremap(spss_fuse1_addr, sizeof(u32));
 
 	if (!spss_fuse1_reg) {
 		pr_err("can't map fuse1 addr\n");
 		return -EINVAL;
 	}
 
-	spss_fuse2_reg = ioremap_nocache(spss_fuse2_addr, sizeof(u32));
+	spss_fuse2_reg = ioremap(spss_fuse2_addr, sizeof(u32));
 
 	if (!spss_fuse2_reg) {
 		iounmap(spss_fuse1_reg);
@@ -853,7 +853,7 @@ static int spss_parse_dt(struct device_node *node)
 		return -EINVAL;
 	}
 
-	spss_emul_type_reg = ioremap_nocache(spss_emul_type_reg_addr,
+	spss_emul_type_reg = ioremap(spss_emul_type_reg_addr,
 					     sizeof(u32));
 	if (!spss_emul_type_reg) {
 		pr_err("can't map soc-emulation-type reg addr\n");
@@ -1120,7 +1120,7 @@ static int spss_utils_pil_callback(struct notifier_block *nb,
 		 * please notice that HYP unmap this area, it is a race.
 		 */
 		if (cmac_mem == NULL) {
-			cmac_mem = ioremap_nocache(cmac_mem_addr, CMAC_MEM_SIZE);
+			cmac_mem = ioremap(cmac_mem_addr, CMAC_MEM_SIZE);
 			if (!cmac_mem) {
 				pr_err("can't map cmac_mem.\n");
 				return -EFAULT;
