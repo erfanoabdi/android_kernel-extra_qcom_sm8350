@@ -46,7 +46,7 @@
 
 #include <linux/module.h>
 #include <linux/cma.h>
-#include <linux/dma-contiguous.h>
+#include <linux/dma-map-ops.h>
 #endif
 
 #ifdef CONFIG_QCOM_DYN_MINIDUMP_STACK

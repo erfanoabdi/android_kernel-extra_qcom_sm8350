@@ -36,7 +36,7 @@
 #include <linux/of.h>
 #include <linux/of_address.h>
 #include <linux/of_platform.h>
-#include <linux/dma-contiguous.h>
+#include <linux/dma-map-ops.h>
 #include <linux/cma.h>
 #include <linux/iommu.h>
 #include <linux/sort.h>
