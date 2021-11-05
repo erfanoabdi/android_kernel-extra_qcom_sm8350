@@ -328,7 +328,7 @@ static int bt_clk_enable(struct bt_power_clk_data *clk)
 		return -EINVAL;
 	/* Get the clock handle for vreg */
 	if (clk->is_enabled) {
-		pr_warning("%s: node: %p, clk->is_enabled:%d\n",
+		pr_warn("%s: node: %p, clk->is_enabled:%d\n",
 			   __func__, clk->clk, clk->is_enabled);
 		return 0;
 	}
@@ -354,7 +354,7 @@ static int bt_clk_disable(struct bt_power_clk_data *clk)
 		return -EINVAL;
 	/* Get the clock handle for vreg */
 	if (!clk->is_enabled) {
-		pr_warning("%s: node: %p, clk->is_enabled:%d\n",
+		pr_warn("%s: node: %p, clk->is_enabled:%d\n",
 			   __func__, clk->clk, clk->is_enabled);
 		return 0;
 	}
