@@ -843,7 +843,7 @@ static int pil_setup_region(struct pil_priv *priv, const struct pil_mdt *mdt)
 	return ret;
 }
 
-static int pil_cmp_seg(void *priv, struct list_head *a, struct list_head *b)
+static int pil_cmp_seg(void *priv, const struct list_head *a, const struct list_head *b)
 {
 	int ret = 0;
 	struct pil_seg *seg_a = list_entry(a, struct pil_seg, list);
