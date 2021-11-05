@@ -6,6 +6,7 @@
 #include <linux/clk.h>
 #include <linux/component.h>
 #include <linux/delay.h>
+#include <linux/dma-map-ops.h>
 #include <linux/firmware.h>
 #include <linux/interconnect.h>
 #include <linux/io.h>

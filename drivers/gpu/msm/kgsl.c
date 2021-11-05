@@ -9,6 +9,7 @@
 #include <linux/debugfs.h>
 #include <linux/delay.h>
 #include <linux/dma-buf.h>
+#include <linux/dma-map-ops.h>
 #include <linux/fdtable.h>
 #include <linux/io.h>
 #include <linux/ion.h>
