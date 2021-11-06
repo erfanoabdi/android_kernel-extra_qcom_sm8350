@@ -54,7 +54,7 @@ struct ipc_event {
 };
 
 struct fd_event {
-	struct timeval timestamp;
+	struct __kernel_old_timeval timestamp;
 	int X;
 	int Y;
 	int id;
@@ -283,7 +283,7 @@ static void qbt_touch_work_func(struct work_struct *work)
 	struct finger_detect_touch *fd_touch = NULL;
 	struct touch_event current_event, last_event;
 	struct fd_event finger_event;
-	struct timespec timestamp;
+	struct timespec64 timestamp;
 	int slot = 0;
 
 	if (!work) {
@@ -333,7 +333,7 @@ static void qbt_touch_work_func(struct work_struct *work)
 				&current_event,	&last_event, slot))
 			continue;
 
-		getnstimeofday(&timestamp);
+		ktime_get_real_ts64(&timestamp);
 		finger_event.timestamp.tv_sec = timestamp.tv_sec;
 		finger_event.timestamp.tv_usec = timestamp.tv_nsec / 1000;
 
@@ -936,7 +936,7 @@ end:
 static void qbt_gpio_report_event(struct qbt_drvdata *drvdata, int state)
 {
 	struct fd_event event;
-	struct timespec timestamp;
+	struct timespec64 timestamp;
 
 	memset(&event, 0, sizeof(event));
 
@@ -958,7 +958,7 @@ static void qbt_gpio_report_event(struct qbt_drvdata *drvdata, int state)
 
 	event.state = state;
 	event.touch_valid = false;
-	getnstimeofday(&timestamp);
+	ktime_get_real_ts64(&timestamp);
 	event.timestamp.tv_sec = timestamp.tv_sec;
 	event.timestamp.tv_usec = timestamp.tv_nsec / 1000;
 	qbt_fd_report_event(drvdata, &event);
