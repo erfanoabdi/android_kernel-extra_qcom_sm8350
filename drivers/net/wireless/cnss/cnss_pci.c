@@ -3277,7 +3277,8 @@ void cnss_request_pm_qos_type(int latency_type, u32 qos_val)
 		return;
 	}
 
-	pm_qos_add_request(&penv->qos_request, latency_type, qos_val);
+	//pm_qos_add_request(&penv->qos_request, latency_type, qos_val);
+	cpu_latency_qos_add_request(&penv->qos_request, qos_val);
 }
 EXPORT_SYMBOL(cnss_request_pm_qos_type);
 
@@ -3288,7 +3289,7 @@ void cnss_request_pm_qos(u32 qos_val)
 		return;
 	}
 
-	pm_qos_add_request(&penv->qos_request, PM_QOS_CPU_DMA_LATENCY, qos_val);
+	cpu_latency_qos_add_request(&penv->qos_request, qos_val);
 }
 EXPORT_SYMBOL(cnss_request_pm_qos);
 
@@ -3299,7 +3300,7 @@ void cnss_remove_pm_qos(void)
 		return;
 	}
 
-	pm_qos_remove_request(&penv->qos_request);
+	cpu_latency_qos_remove_request(&penv->qos_request);
 }
 EXPORT_SYMBOL(cnss_remove_pm_qos);
 
@@ -3310,7 +3311,8 @@ void cnss_pci_request_pm_qos_type(int latency_type, u32 qos_val)
 		return;
 	}
 
-	pm_qos_add_request(&penv->qos_request, latency_type, qos_val);
+	//pm_qos_add_request(&penv->qos_request, latency_type, qos_val);
+	cpu_latency_qos_add_request(&penv->qos_request, qos_val);
 }
 EXPORT_SYMBOL(cnss_pci_request_pm_qos_type);
 
@@ -3321,7 +3323,7 @@ void cnss_pci_request_pm_qos(u32 qos_val)
 		return;
 	}
 
-	pm_qos_add_request(&penv->qos_request, PM_QOS_CPU_DMA_LATENCY, qos_val);
+	cpu_latency_qos_add_request(&penv->qos_request, qos_val);
 }
 EXPORT_SYMBOL(cnss_pci_request_pm_qos);
 
@@ -3332,7 +3334,7 @@ void cnss_pci_remove_pm_qos(void)
 		return;
 	}
 
-	pm_qos_remove_request(&penv->qos_request);
+	cpu_latency_qos_remove_request(&penv->qos_request);
 }
 EXPORT_SYMBOL(cnss_pci_remove_pm_qos);
 

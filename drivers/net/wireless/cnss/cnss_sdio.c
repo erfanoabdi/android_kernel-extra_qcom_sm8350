@@ -172,7 +172,8 @@ void cnss_sdio_request_pm_qos_type(int latency_type, u32 qos_val)
 		return;
 
 	pr_debug("PM QoS value: %d\n", qos_val);
-	pm_qos_add_request(&cnss_pdata->qos_request, latency_type, qos_val);
+	//pm_qos_add_request(&cnss_pdata->qos_request, latency_type, qos_val);
+	cpu_latency_qos_add_request(&cnss_pdata->qos_request, qos_val);
 }
 EXPORT_SYMBOL(cnss_sdio_request_pm_qos_type);
 
@@ -216,8 +217,7 @@ void cnss_sdio_request_pm_qos(u32 qos_val)
 		return;
 
 	pr_debug("PM QoS value: %d\n", qos_val);
-	pm_qos_add_request(&cnss_pdata->qos_request,
-			   PM_QOS_CPU_DMA_LATENCY, qos_val);
+	cpu_latency_qos_add_request(&cnss_pdata->qos_request, qos_val);
 }
 EXPORT_SYMBOL(cnss_sdio_request_pm_qos);
 
@@ -226,7 +226,7 @@ void cnss_sdio_remove_pm_qos(void)
 	if (!cnss_pdata)
 		return;
 
-	pm_qos_remove_request(&cnss_pdata->qos_request);
+	cpu_latency_qos_remove_request(&cnss_pdata->qos_request);
 	pr_debug("PM QoS removed\n");
 }
 EXPORT_SYMBOL(cnss_sdio_remove_pm_qos);
