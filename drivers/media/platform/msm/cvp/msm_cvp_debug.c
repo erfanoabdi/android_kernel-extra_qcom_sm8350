@@ -249,14 +249,14 @@ struct dentry *msm_cvp_debugfs_init_drv(void)
 	f;                                                                    \
 })
 
+	debugfs_create_x32("debug_level", 0644, dir, &msm_cvp_debug);
+	debugfs_create_x32("fw_level", 0644, dir, &msm_cvp_fw_debug);
+	debugfs_create_u32("fw_debug_mode", 0644, dir, &msm_cvp_fw_debug_mode);
+	debugfs_create_u32("fw_low_power_mode", 0644, dir, &msm_cvp_fw_low_power_mode);
+	debugfs_create_u32("debug_output", 0644, dir, &msm_cvp_debug_out);
+
 	ok =
-	__debugfs_create(x32, "debug_level", &msm_cvp_debug) &&
-	__debugfs_create(x32, "fw_level", &msm_cvp_fw_debug) &&
-	__debugfs_create(u32, "fw_debug_mode", &msm_cvp_fw_debug_mode) &&
 	__debugfs_create(bool, "fw_coverage", &msm_cvp_fw_coverage) &&
-	__debugfs_create(u32, "fw_low_power_mode",
-			&msm_cvp_fw_low_power_mode) &&
-	__debugfs_create(u32, "debug_output", &msm_cvp_debug_out) &&
 	__debugfs_create(bool, "disable_thermal_mitigation",
 			&msm_cvp_thermal_mitigation_disabled) &&
 	__debugfs_create(bool, "disable_cacheop",

@@ -2084,21 +2084,13 @@ static void veth_ipa_debugfs_init(struct veth_ipa_dev *veth_ipa_ctx)
 		goto fail_directory;
 	}
 
-	file = debugfs_create_u8("outstanding_high", flags_read_write,
+	debugfs_create_u8("outstanding_high", flags_read_write,
 		veth_ipa_ctx->directory,
 		&veth_ipa_ctx->outstanding_high);
 
-	if (!file) {
-		VETH_IPA_ERROR("could not create outstanding_high file\n");
-		goto fail_file;
-	}
-	file = debugfs_create_u8("outstanding_low", flags_read_write,
+	debugfs_create_u8("outstanding_low", flags_read_write,
 		veth_ipa_ctx->directory,
 		&veth_ipa_ctx->outstanding_low);
-	if (!file) {
-		VETH_IPA_ERROR("could not create outstanding_low file\n");
-		goto fail_file;
-	}
 
 	file = debugfs_create_file("outstanding", flags_read_only,
 		veth_ipa_ctx->directory,
@@ -2380,4 +2372,3 @@ module_init(veth_ipa_init_module);
 
 /*Exit function for this module*/
 module_exit(veth_ipa_cleanup_module);
-

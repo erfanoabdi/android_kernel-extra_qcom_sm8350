@@ -1660,10 +1660,8 @@ static void smblite_create_debugfs(struct smblite *chip)
 		pr_err("Couldn't create force_usb_psy_update file rc=%ld\n",
 			(long)file);
 
-	file = debugfs_create_u32("debug_mask", 0600, chip->dfs_root,
+	debugfs_create_u32("debug_mask", 0600, chip->dfs_root,
 			&__debug_mask);
-	if (IS_ERR_OR_NULL(file))
-		pr_err("Couldn't create debug_mask file rc=%ld\n", (long)file);
 }
 
 #else
