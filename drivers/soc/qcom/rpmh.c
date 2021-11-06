@@ -378,20 +378,6 @@ static int flush_batch(struct rpmh_ctrlr *ctrlr)
 	return ret;
 }
 
-static void invalidate_batch(struct rpmh_ctrlr *ctrlr)
-{
-	struct batch_cache_req *req, *tmp;
-	unsigned long flags;
-
-	spin_lock_irqsave(&ctrlr->cache_lock, flags);
-	list_for_each_entry_safe(req, tmp, &ctrlr->batch_cache, list) {
-		list_del(&req->list);
-		kfree(req);
-	}
-	INIT_LIST_HEAD(&ctrlr->batch_cache);
-	spin_unlock_irqrestore(&ctrlr->cache_lock, flags);
-}
-
 /**
  * rpmh_write_batch: Write multiple sets of RPMH commands and wait for the
  * batch to finish.
@@ -618,22 +604,23 @@ EXPORT_SYMBOL(rpmh_flush);
  *
  * Invalidate the sleep and active values in the TCS blocks.
  */
-int rpmh_invalidate(const struct device *dev)
+void rpmh_invalidate(const struct device *dev)
 {
 	struct rpmh_ctrlr *ctrlr = get_rpmh_ctrlr(dev);
-	int ret;
+	struct batch_cache_req *req, *tmp;
+	unsigned long flags;
 
 	if (rpmh_standalone)
-		return 0;
+		return;
 
-	invalidate_batch(ctrlr);
+	spin_lock_irqsave(&ctrlr->cache_lock, flags);
+	list_for_each_entry_safe(req, tmp, &ctrlr->batch_cache, list) {
+		list_del(&req->list);
+		kfree(req);
+	}
+	INIT_LIST_HEAD(&ctrlr->batch_cache);
 	ctrlr->dirty = true;
-
-	do {
-		ret = rpmh_rsc_invalidate(ctrlr_to_drv(ctrlr));
-	} while (ret == -EAGAIN);
-
-	return ret;
+	spin_unlock_irqrestore(&ctrlr->cache_lock, flags);
 }
 EXPORT_SYMBOL(rpmh_invalidate);
 
