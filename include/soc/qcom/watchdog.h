@@ -66,6 +66,8 @@
 
 #define NR_TOP_HITTERS 10
 
+#define NR_IPI	7
+
 struct qcom_wdt_ops;
 struct msm_watchdog_data;
 
