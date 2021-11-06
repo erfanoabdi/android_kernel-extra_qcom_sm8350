@@ -98,13 +98,15 @@ static struct clk_regmap_ops clk_regmap_div_regmap_ops = {
 	.list_rate = clk_regmap_div_list_rate,
 };
 
-static void clk_regmap_div_init(struct clk_hw *hw)
+static int clk_regmap_div_init(struct clk_hw *hw)
 {
 	struct clk_regmap_div *divider = to_clk_regmap_div(hw);
 	struct clk_regmap *clkr = &divider->clkr;
 
 	if (!clkr->ops)
 		clkr->ops = &clk_regmap_div_regmap_ops;
+
+	return 0;
 }
 
 const struct clk_ops clk_regmap_div_ops = {

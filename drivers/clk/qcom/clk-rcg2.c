@@ -735,12 +735,14 @@ static struct clk_regmap_ops clk_rcg2_regmap_ops = {
 	.list_registers = clk_rcg2_list_registers,
 };
 
-static void clk_rcg2_init(struct clk_hw *hw)
+static int clk_rcg2_init(struct clk_hw *hw)
 {
 	struct clk_regmap *rclk = to_clk_regmap(hw);
 
 	if (!rclk->ops)
 		rclk->ops = &clk_rcg2_regmap_ops;
+
+	return 0;
 }
 
 static int clk_rcg2_set_duty_cycle(struct clk_hw *hw, struct clk_duty *duty)

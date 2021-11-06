@@ -251,12 +251,14 @@ static struct clk_regmap_ops clk_branch2_regmap_ops = {
 	.set_flags = clk_branch2_set_flags,
 };
 
-static void clk_branch2_init(struct clk_hw *hw)
+static int clk_branch2_init(struct clk_hw *hw)
 {
 	struct clk_regmap *rclk = to_clk_regmap(hw);
 
 	if (!rclk->ops)
 		rclk->ops = &clk_branch2_regmap_ops;
+
+	return 0;
 }
 
 const struct clk_ops clk_branch2_ops = {

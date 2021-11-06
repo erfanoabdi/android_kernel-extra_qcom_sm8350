@@ -391,12 +391,14 @@ static struct clk_regmap_ops clk_pll_hf_regmap_ops = {
 	.list_registers = &clk_pll_hf_list_registers,
 };
 
-static void clk_pll_hf_init(struct clk_hw *hw)
+static int clk_pll_hf_init(struct clk_hw *hw)
 {
 	struct clk_regmap *rclk = to_clk_regmap(hw);
 
 	if (!rclk->ops)
 		rclk->ops = &clk_pll_hf_regmap_ops;
+
+	return 0;
 }
 
 const struct clk_ops clk_pll_hf_ops = {

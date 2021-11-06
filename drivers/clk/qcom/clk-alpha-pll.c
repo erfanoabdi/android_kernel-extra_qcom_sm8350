@@ -1374,12 +1374,14 @@ static struct clk_regmap_ops clk_trion_pll_regmap_ops = {
 	.list_registers = &clk_trion_pll_list_registers,
 };
 
-static void clk_trion_pll_init(struct clk_hw *hw)
+static int clk_trion_pll_init(struct clk_hw *hw)
 {
 	struct clk_regmap *rclk = to_clk_regmap(hw);
 
 	if (!rclk->ops)
 		rclk->ops = &clk_trion_pll_regmap_ops;
+
+	return 0;
 }
 
 static int __zonda_pll_is_enabled(struct clk_alpha_pll *pll,
@@ -1801,12 +1803,14 @@ static struct clk_regmap_ops clk_alpha_pll_regmap_ops = {
 	.list_registers = clk_alpha_pll_list_registers,
 };
 
-static void clk_alpha_pll_init(struct clk_hw *hw)
+static int clk_alpha_pll_init(struct clk_hw *hw)
 {
 	struct clk_regmap *rclk = to_clk_regmap(hw);
 
 	if (!rclk->ops)
 		rclk->ops = &clk_alpha_pll_regmap_ops;
+
+	return 0;
 }
 
 static void clk_alpha_pll_huayra_list_registers(struct seq_file *f,
@@ -1856,12 +1860,14 @@ static struct clk_regmap_ops clk_alpha_pll_huayra_regmap_ops = {
 	.list_registers = clk_alpha_pll_huayra_list_registers,
 };
 
-static void clk_alpha_pll_huayra_init(struct clk_hw *hw)
+static int clk_alpha_pll_huayra_init(struct clk_hw *hw)
 {
 	struct clk_regmap *rclk = to_clk_regmap(hw);
 
 	if (!rclk->ops)
 		rclk->ops = &clk_alpha_pll_huayra_regmap_ops;
+
+	return 0;
 }
 
 const struct clk_ops clk_alpha_pll_ops = {
@@ -2006,12 +2012,14 @@ static struct clk_regmap_ops clk_alpha_pll_zonda_regmap_ops = {
 	.list_registers = clk_alpha_pll_zonda_list_registers,
 };
 
-static void clk_alpha_pll_zonda_init(struct clk_hw *hw)
+static int clk_alpha_pll_zonda_init(struct clk_hw *hw)
 {
 	struct clk_regmap *rclk = to_clk_regmap(hw);
 
 	if (!rclk->ops)
 		rclk->ops = &clk_alpha_pll_zonda_regmap_ops;
+
+	return 0;
 }
 
 const struct clk_ops clk_alpha_pll_zonda_ops = {
@@ -2420,12 +2428,14 @@ static struct clk_regmap_ops clk_fabia_pll_regmap_ops = {
 	.list_registers = &clk_fabia_pll_list_registers,
 };
 
-static void clk_fabia_pll_init(struct clk_hw *hw)
+static int clk_fabia_pll_init(struct clk_hw *hw)
 {
 	struct clk_regmap *rclk = to_clk_regmap(hw);
 
 	if (!rclk->ops)
 		rclk->ops = &clk_fabia_pll_regmap_ops;
+
+	return 0;
 }
 
 const struct clk_ops clk_alpha_pll_fabia_ops = {
@@ -3357,12 +3367,14 @@ static struct clk_regmap_ops clk_lucid_pll_regmap_ops = {
 	.list_registers = &lucid_pll_list_registers,
 };
 
-static void clk_lucid_pll_init(struct clk_hw *hw)
+static int clk_lucid_pll_init(struct clk_hw *hw)
 {
 	struct clk_regmap *rclk = to_clk_regmap(hw);
 
 	if (!rclk->ops)
 		rclk->ops = &clk_lucid_pll_regmap_ops;
+
+	return 0;
 }
 
 const struct clk_ops clk_alpha_pll_lucid_ops = {
@@ -3845,12 +3857,14 @@ static struct clk_regmap_ops clk_lucid_evo_pll_regmap_ops = {
 	.list_registers = &lucid_evo_pll_list_registers,
 };
 
-static void clk_lucid_evo_pll_init(struct clk_hw *hw)
+static int clk_lucid_evo_pll_init(struct clk_hw *hw)
 {
 	struct clk_regmap *rclk = to_clk_regmap(hw);
 
 	if (!rclk->ops)
 		rclk->ops = &clk_lucid_evo_pll_regmap_ops;
+
+	return 0;
 }
 
 const struct clk_ops clk_alpha_pll_fixed_lucid_evo_ops = {
@@ -4061,12 +4075,14 @@ static struct clk_regmap_ops clk_alpha_pll_zonda_evo_regmap_ops = {
 	.list_registers = clk_alpha_pll_zonda_evo_list_registers,
 };
 
-static void clk_alpha_pll_zonda_evo_init(struct clk_hw *hw)
+static int clk_alpha_pll_zonda_evo_init(struct clk_hw *hw)
 {
 	struct clk_regmap *rclk = to_clk_regmap(hw);
 
 	if (!rclk->ops)
 		rclk->ops = &clk_alpha_pll_zonda_evo_regmap_ops;
+
+	return 0;
 }
 
 int clk_zonda_evo_pll_configure(struct clk_alpha_pll *pll, struct regmap *regmap,
@@ -4453,12 +4469,14 @@ static struct clk_regmap_ops clk_regera_pll_regmap_ops = {
 	.list_registers = clk_regera_pll_list_registers,
 };
 
-static void clk_regera_pll_init(struct clk_hw *hw)
+static int clk_regera_pll_init(struct clk_hw *hw)
 {
 	struct clk_regmap *rclk = to_clk_regmap(hw);
 
 	if (!rclk->ops)
 		rclk->ops = &clk_regera_pll_regmap_ops;
+
+	return 0;
 }
 
 const struct clk_ops clk_regera_pll_ops = {
@@ -4609,12 +4627,14 @@ static struct clk_regmap_ops clk_agera_pll_regmap_ops = {
 	.list_registers = clk_agera_pll_list_registers,
 };
 
-static void clk_agera_pll_init(struct clk_hw *hw)
+static int clk_agera_pll_init(struct clk_hw *hw)
 {
 	struct clk_regmap *rclk = to_clk_regmap(hw);
 
 	if (!rclk->ops)
 		rclk->ops = &clk_agera_pll_regmap_ops;
+
+	return 0;
 }
 
 const struct clk_ops clk_agera_pll_ops = {
