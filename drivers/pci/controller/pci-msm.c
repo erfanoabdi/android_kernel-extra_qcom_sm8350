@@ -4905,9 +4905,7 @@ int msm_pcie_enumerate(u32 rc_idx)
 	struct pci_host_bridge *bridge;
 	bool found = false;
 	struct pci_bus *bus, *child;
-	resource_size_t iobase = 0;
 	u32 ids, vendor_id, device_id;
-	LIST_HEAD(res);
 
 	mutex_lock(&dev->enumerate_lock);
 
@@ -4947,28 +4945,10 @@ int msm_pcie_enumerate(u32 rc_idx)
 		goto out;
 	}
 
-	ret = devm_of_pci_get_host_bridge_resources(&dev->pdev->dev, 0, 0xff,
-						&res, &iobase);
-	if (ret) {
-		PCIE_ERR(dev,
-			"PCIe: RC%d: failed to get host bridge resources. ret: %d\n",
-			dev->rc_idx, ret);
-		goto out;
-	}
-
-	ret = devm_request_pci_bus_resources(&dev->pdev->dev, &res);
-	if (ret) {
-		PCIE_ERR(dev,
-			"PCIe: RC%d: failed to request pci bus resources %d\n",
-			dev->rc_idx, ret);
-		goto out;
-	}
-
 	ret = msm_msi_init(&dev->pdev->dev);
 	if (ret)
 		goto out;
 
-	list_splice_init(&res, &bridge->windows);
 	bridge->dev.parent = &dev->pdev->dev;
 	bridge->sysdata = dev;
 	bridge->busnr = 0;
