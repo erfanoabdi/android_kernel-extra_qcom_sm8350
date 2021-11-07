@@ -985,21 +985,6 @@ static void arm_smmu_tlb_inv_walk(unsigned long iova, size_t size,
 	ops->tlb_sync(cookie);
 }
 
-static void arm_smmu_tlb_inv_leaf(unsigned long iova, size_t size,
-				  size_t granule, void *cookie)
-{
-	struct arm_smmu_domain *smmu_domain = cookie;
-	const struct arm_smmu_flush_ops *ops = smmu_domain->flush_ops;
-
-	if (!IS_ENABLED(CONFIG_QCOM_IOMMU_TLBI_QUIRKS)) {
-		smmu_domain->defer_flush = true;
-		return;
-	}
-
-	ops->tlb_inv_range(iova, size, granule, true, cookie);
-	ops->tlb_sync(cookie);
-}
-
 static void arm_smmu_tlb_add_page(struct iommu_iotlb_gather *gather,
 				  unsigned long iova, size_t granule,
 				  void *cookie)
@@ -1090,7 +1075,6 @@ static const struct arm_smmu_flush_ops arm_smmu_s1_tlb_ops = {
 	.tlb = {
 		.tlb_flush_all  = arm_smmu_tlb_inv_context_s1,
 		.tlb_flush_walk = arm_smmu_tlb_inv_walk,
-		.tlb_flush_leaf = arm_smmu_tlb_inv_leaf,
 		.tlb_add_page   = arm_smmu_tlb_add_page,
 	},
 	.tlb_inv_range		= arm_smmu_tlb_inv_range_s1,
@@ -1101,7 +1085,6 @@ static const struct arm_smmu_flush_ops arm_smmu_s2_tlb_ops_v2 = {
 	.tlb = {
 		.tlb_flush_all  = arm_smmu_tlb_inv_context_s2,
 		.tlb_flush_walk = arm_smmu_tlb_inv_walk,
-		.tlb_flush_leaf = arm_smmu_tlb_inv_leaf,
 		.tlb_add_page   = arm_smmu_tlb_add_page,
 	},
 	.tlb_inv_range		= arm_smmu_tlb_inv_range_s2,
@@ -1112,7 +1095,6 @@ static const struct arm_smmu_flush_ops arm_smmu_s2_tlb_ops_v1 = {
 	.tlb = {
 		.tlb_flush_all  = arm_smmu_tlb_inv_context_s2,
 		.tlb_flush_walk = arm_smmu_tlb_inv_walk,
-		.tlb_flush_leaf = arm_smmu_tlb_inv_leaf,
 		.tlb_add_page   = arm_smmu_tlb_add_page,
 	},
 	.tlb_inv_range		= arm_smmu_tlb_inv_vmid_nosync,
