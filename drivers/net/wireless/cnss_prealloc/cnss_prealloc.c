@@ -14,20 +14,12 @@
 
 static DEFINE_SPINLOCK(alloc_lock);
 
-#ifdef CONFIG_SLUB_DEBUG
-#define WCNSS_MAX_STACK_TRACE			64
-#endif
-
 static struct kobject  *prealloc_kobject;
 
 struct wcnss_prealloc {
 	int occupied;
 	size_t size;
 	void *ptr;
-#ifdef CONFIG_SLUB_DEBUG
-	unsigned long stack_trace[WCNSS_MAX_STACK_TRACE];
-	struct stack_trace trace;
-#endif
 };
 
 /* pre-alloced mem for WLAN driver */
@@ -126,23 +118,8 @@ void wcnss_prealloc_deinit(void)
 	}
 }
 
-#ifdef CONFIG_SLUB_DEBUG
-static void wcnss_prealloc_save_stack_trace(struct wcnss_prealloc *entry)
-{
-	struct stack_trace *trace = &entry->trace;
-
-	memset(&entry->stack_trace, 0, sizeof(entry->stack_trace));
-	trace->nr_entries = 0;
-	trace->max_entries = WCNSS_MAX_STACK_TRACE;
-	trace->entries = entry->stack_trace;
-	trace->skip = 2;
-
-	save_stack_trace(trace);
-}
-#else
 static inline
 void wcnss_prealloc_save_stack_trace(struct wcnss_prealloc *entry) {}
-#endif
 
 void *wcnss_prealloc_get(size_t size)
 {
@@ -187,30 +164,7 @@ int wcnss_prealloc_put(void *ptr)
 }
 EXPORT_SYMBOL(wcnss_prealloc_put);
 
-#ifdef CONFIG_SLUB_DEBUG
-void wcnss_prealloc_check_memory_leak(void)
-{
-	int i, j = 0;
-	struct stack_trace *trace = NULL;
-
-	for (i = 0; i < ARRAY_SIZE(wcnss_allocs); i++) {
-		if (!wcnss_allocs[i].occupied)
-			continue;
-
-		if (j == 0) {
-			pr_err("wcnss_prealloc: Memory leak detected\n");
-			j++;
-		}
-
-		pr_err("Size: %zu, addr: %pK, backtrace:\n",
-		       wcnss_allocs[i].size, wcnss_allocs[i].ptr);
-		trace = &wcnss_allocs[i].trace;
-		stack_trace_print(trace->entries, trace->nr_entries, 1);
-	}
-}
-#else
 void wcnss_prealloc_check_memory_leak(void) {}
-#endif
 EXPORT_SYMBOL(wcnss_prealloc_check_memory_leak);
 
 int wcnss_pre_alloc_reset(void)
