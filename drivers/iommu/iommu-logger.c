@@ -111,7 +111,7 @@ static struct iommu_debug_attachment *iommu_logger_init(
 		return ERR_PTR(-ENOMEM);
 	}
 
-	group = iommu_group_get_for_dev(dev);
+	group = iommu_group_get(dev);
 	iommu_group_put(group);
 
 	INIT_LIST_HEAD(&logger->list);
