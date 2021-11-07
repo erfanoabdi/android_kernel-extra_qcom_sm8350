@@ -1086,69 +1086,6 @@ static void arm_smmu_secure_pool_destroy(struct arm_smmu_domain *smmu_domain)
 	}
 }
 
-static void *arm_smmu_alloc_pgtable(void *cookie, int order, gfp_t gfp_mask)
-{
-	int ret;
-	struct page *page;
-	void *page_addr;
-	size_t size = (1UL << order) * PAGE_SIZE;
-	struct arm_smmu_domain *smmu_domain = cookie;
-
-	if (!arm_smmu_has_secure_vmid(smmu_domain)) {
-		/* size is expected to be 4K with current configuration */
-		if (size == PAGE_SIZE) {
-			page = list_first_entry_or_null(
-				&smmu_domain->nonsecure_pool, struct page, lru);
-			if (page) {
-				list_del_init(&page->lru);
-				return page_address(page);
-			}
-		}
-
-		page = alloc_pages(gfp_mask, order);
-		if (!page)
-			return NULL;
-
-		return page_address(page);
-	}
-
-	page_addr = arm_smmu_secure_pool_remove(smmu_domain, size);
-	if (page_addr)
-		return page_addr;
-
-	page = alloc_pages(gfp_mask, order);
-	if (!page)
-		return NULL;
-
-	page_addr = page_address(page);
-	ret = arm_smmu_prepare_pgtable(page_addr, cookie);
-	if (ret) {
-		free_pages((unsigned long)page_addr, order);
-		return NULL;
-	}
-
-	return page_addr;
-}
-
-static void arm_smmu_free_pgtable(void *cookie, void *virt, int order)
-{
-	struct arm_smmu_domain *smmu_domain = cookie;
-	size_t size = (1UL << order) * PAGE_SIZE;
-
-	if (!arm_smmu_has_secure_vmid(smmu_domain)) {
-		free_pages((unsigned long)virt, order);
-		return;
-	}
-
-	if (arm_smmu_secure_pool_add(smmu_domain, virt, size))
-		arm_smmu_unprepare_pgtable(smmu_domain, virt, size);
-}
-
-static const struct iommu_pgtable_ops arm_smmu_pgtable_ops = {
-	.alloc_pgtable = arm_smmu_alloc_pgtable,
-	.free_pgtable  = arm_smmu_free_pgtable,
-};
-
 static const struct arm_smmu_flush_ops arm_smmu_s1_tlb_ops = {
 	.tlb = {
 		.tlb_flush_all  = arm_smmu_tlb_inv_context_s1,
@@ -2235,7 +2172,6 @@ static int arm_smmu_init_domain_context(struct iommu_domain *domain,
 		.oas		= oas,
 		.coherent_walk	= is_iommu_pt_coherent(smmu_domain),
 		.tlb		= &smmu_domain->flush_ops->tlb,
-		.iommu_pgtable_ops = &arm_smmu_pgtable_ops,
 		.iommu_dev	= smmu->dev,
 	};
 
