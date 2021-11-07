@@ -3123,7 +3123,7 @@ static unsigned long arm_smmu_mask_iova(struct arm_smmu_domain *smmu_domain,
 }
 
 static int arm_smmu_map(struct iommu_domain *domain, unsigned long iova,
-			phys_addr_t paddr, size_t size, int prot)
+			phys_addr_t paddr, size_t size, int prot, gfp_t gfp)
 {
 	int ret;
 	unsigned long flags;
@@ -3148,7 +3148,7 @@ static int arm_smmu_map(struct iommu_domain *domain, unsigned long iova,
 	arm_smmu_secure_domain_lock(smmu_domain);
 	arm_smmu_rpm_get(smmu);
 	spin_lock_irqsave(&smmu_domain->cb_lock, flags);
-	ret = ops->map(ops, iova, paddr, size, prot);
+	ret = ops->map(ops, iova, paddr, size, prot, gfp);
 
 	arm_smmu_deferred_flush(smmu_domain);
 
@@ -3164,7 +3164,7 @@ static int arm_smmu_map(struct iommu_domain *domain, unsigned long iova,
 		arm_smmu_rpm_get(smmu);
 		spin_lock_irqsave(&smmu_domain->cb_lock, flags);
 		list_splice_init(&nonsecure_pool, &smmu_domain->nonsecure_pool);
-		ret = ops->map(ops, iova, paddr, size, prot);
+		ret = ops->map(ops, iova, paddr, size, prot, gfp);
 		list_splice_init(&smmu_domain->nonsecure_pool, &nonsecure_pool);
 		arm_smmu_deferred_flush(smmu_domain);
 		spin_unlock_irqrestore(&smmu_domain->cb_lock, flags);
