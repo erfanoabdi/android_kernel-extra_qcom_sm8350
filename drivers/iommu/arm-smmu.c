@@ -2527,10 +2527,8 @@ static int arm_smmu_master_alloc_smes(struct device *dev)
 	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
 	struct arm_smmu_device *smmu = cfg->smmu;
 	struct arm_smmu_smr *smrs = smmu->smrs;
-	struct iommu_group *group;
 	int i, idx, ret;
 
-	mutex_lock(&smmu->iommu_group_mutex);
 	mutex_lock(&smmu->stream_map_mutex);
 	/* Figure out a viable stream map entry allocation */
 	for_each_cfg_sme(cfg, fwspec, i, idx) {
@@ -2556,23 +2554,7 @@ static int arm_smmu_master_alloc_smes(struct device *dev)
 		cfg->smendx[i] = (s16)idx;
 	}
 	mutex_unlock(&smmu->stream_map_mutex);
-
-	group = iommu_group_get(dev);
-	if (!group) {
-		ret = PTR_ERR(group);
-		goto iommu_group_err;
-	}
-	iommu_group_put(group);
-
-	/* It worked! Don't poke the actual hardware until we've attached */
-	for_each_cfg_sme(cfg, fwspec, i, idx)
-		smmu->s2crs[idx].group = group;
-
-	mutex_unlock(&smmu->iommu_group_mutex);
 	return 0;
-
-iommu_group_err:
-	mutex_lock(&smmu->stream_map_mutex);
 
 sme_err:
 	while (i--) {
@@ -2580,7 +2562,6 @@ sme_err:
 		cfg->smendx[i] = INVALID_SMENDX;
 	}
 	mutex_unlock(&smmu->stream_map_mutex);
-	mutex_unlock(&smmu->iommu_group_mutex);
 	return ret;
 }
 
@@ -3512,7 +3493,7 @@ struct arm_smmu_device *arm_smmu_get_by_fwnode(struct fwnode_handle *fwnode)
 	return dev ? dev_get_drvdata(dev) : NULL;
 }
 
-static int arm_smmu_add_device(struct device *dev)
+static struct iommu_device *arm_smmu_probe_device(struct device *dev)
 {
 	struct arm_smmu_device *smmu;
 	struct arm_smmu_master_cfg *cfg;
@@ -3534,9 +3515,9 @@ static int arm_smmu_add_device(struct device *dev)
 	} else if (fwspec && fwspec->ops == &arm_smmu_ops.iommu_ops) {
 		smmu = arm_smmu_get_by_fwnode(fwspec->iommu_fwnode);
 		if (!smmu)
-			return -ENODEV;
+			return ERR_PTR(-ENODEV);
 	} else {
-		return -ENODEV;
+		return ERR_PTR(-ENODEV);
 	}
 
 	ret = arm_smmu_power_on(smmu->pwr);
@@ -3583,7 +3564,7 @@ static int arm_smmu_add_device(struct device *dev)
 	if (ret)
 		goto out_dev_link_free;
 	arm_smmu_power_off(smmu, smmu->pwr);
-	return 0;
+	return &smmu->iommu;
 
 out_dev_link_free:
 	device_link_del(link);
@@ -3593,10 +3574,10 @@ out_pwr_off:
 	arm_smmu_power_off(smmu, smmu->pwr);
 out_free:
 	iommu_fwspec_free(dev);
-	return ret;
+	return ERR_PTR(ret);
 }
 
-static void arm_smmu_remove_device(struct device *dev)
+static void arm_smmu_release_device(struct device *dev)
 {
 	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
 	struct arm_smmu_master_cfg *cfg;
@@ -3628,7 +3609,6 @@ static void arm_smmu_remove_device(struct device *dev)
 
 	arm_smmu_master_free_smes(cfg, fwspec);
 	dev_iommu_priv_set(dev, NULL);
-	iommu_group_remove_device(dev);
 	kfree(cfg);
 	iommu_fwspec_free(dev);
 	arm_smmu_power_off(smmu, smmu->pwr);
@@ -3679,6 +3659,11 @@ finish:
 		iommu_group_put(group);
 		return ERR_PTR(-EINVAL);
 	}
+
+	/* Remember group for faster lookups */
+	if (!IS_ERR(group))
+		for_each_cfg_sme(cfg, fwspec, i, idx)
+			smmu->s2crs[idx].group = group;
 
 	return group;
 }
@@ -4195,8 +4180,8 @@ static struct msm_iommu_ops arm_smmu_ops = {
 		.flush_iotlb_all	= arm_smmu_flush_iotlb_all,
 		.iotlb_sync		= arm_smmu_iotlb_sync,
 		.iova_to_phys		= arm_smmu_iova_to_phys,
-		.add_device		= arm_smmu_add_device,
-		.remove_device		= arm_smmu_remove_device,
+		.probe_device		= arm_smmu_probe_device,
+		.release_device		= arm_smmu_release_device,
 		.device_group		= arm_smmu_device_group,
 		.domain_get_attr	= arm_smmu_domain_get_attr,
 		.domain_set_attr	= arm_smmu_domain_set_attr,
