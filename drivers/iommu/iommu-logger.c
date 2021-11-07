@@ -64,8 +64,8 @@ static int iommu_logger_domain_ttbrs(struct io_pgtable *iop, void **ttbr0_ptr,
 #ifdef CONFIG_IOMMU_IO_PGTABLE_FAST
 	case ARM_V8L_FAST:
 #endif
-		ttbr0 = iop->cfg.arm_lpae_s1_cfg.ttbr[0];
-		ttbr1 = iop->cfg.arm_lpae_s1_cfg.ttbr[1];
+		ttbr0 = iop->cfg.arm_lpae_s1_cfg.ttbr;
+		ttbr1 = 0;
 		ret = 0;
 		break;
 	default:

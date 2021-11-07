@@ -1528,18 +1528,13 @@ static void arm_smmu_init_context_bank(struct arm_smmu_domain *smmu_domain,
 	/* TTBRs */
 	if (stage1) {
 		if (cfg->fmt == ARM_SMMU_CTX_FMT_AARCH32_S) {
-			cb->ttbr[0] = pgtbl_cfg->arm_v7s_cfg.ttbr[0];
-			cb->ttbr[1] = pgtbl_cfg->arm_v7s_cfg.ttbr[1];
+			cb->ttbr[0] = pgtbl_cfg->arm_v7s_cfg.ttbr;
+			cb->ttbr[1] = 0;
 		} else {
-			cb->ttbr[0] = pgtbl_cfg->arm_lpae_s1_cfg.ttbr[0];
+			cb->ttbr[0] = pgtbl_cfg->arm_lpae_s1_cfg.ttbr;
 			cb->ttbr[0] |= FIELD_PREP(TTBRn_ASID, cfg->asid);
-			if (split_tables) {
+			if (!split_tables) {
 				cb->ttbr[1] =
-				ttbr1_pgtbl_cfg->arm_lpae_s1_cfg.ttbr[0];
-			} else {
-				cb->ttbr[1] =
-					pgtbl_cfg->arm_lpae_s1_cfg.ttbr[1];
-				cb->ttbr[1] |=
 					FIELD_PREP(TTBRn_ASID, cfg->asid);
 			}
 		}
@@ -3707,7 +3702,7 @@ static int arm_smmu_domain_get_attr(struct iommu_domain *domain,
 		ret = 0;
 		break;
 	case DOMAIN_ATTR_PT_BASE_ADDR:
-		*((phys_addr_t *)data) = pgtbl_cfg->arm_lpae_s1_cfg.ttbr[0];
+		*((phys_addr_t *)data) = pgtbl_cfg->arm_lpae_s1_cfg.ttbr;
 		ret = 0;
 		break;
 	case DOMAIN_ATTR_CONTEXT_BANK:
@@ -3727,7 +3722,7 @@ static int arm_smmu_domain_get_attr(struct iommu_domain *domain,
 			ret = -ENODEV;
 			break;
 		}
-		val = pgtbl_cfg->arm_lpae_s1_cfg.ttbr[0];
+		val = pgtbl_cfg->arm_lpae_s1_cfg.ttbr;
 		if (smmu_domain->cfg.cbar != CBAR_TYPE_S2_TRANS)
 			val |= FIELD_PREP(TTBRn_ASID, ARM_SMMU_CB_ASID(smmu,
 							&smmu_domain->cfg));
