@@ -477,7 +477,7 @@ int mhi_arch_pcie_init(struct mhi_controller *mhi_cntrl)
 			mhi_cntrl->tsync_log = mhi_arch_timesync_log;
 
 		/* check if root-complex support DRV */
-		root_port = pci_find_pcie_root_port(mhi_dev->pci_dev);
+		root_port = pcie_find_root_port(mhi_dev->pci_dev);
 		root_ofnode = root_port->dev.of_node;
 		if (root_ofnode->parent)
 			mhi_dev->drv_supported =
