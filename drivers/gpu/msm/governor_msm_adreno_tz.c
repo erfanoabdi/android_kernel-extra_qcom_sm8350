@@ -587,7 +587,7 @@ static int tz_handler(struct devfreq *devfreq, unsigned int event, void *data)
 		suspend_start = 0;
 		spin_unlock(&suspend_lock);
 		/* fallthrough */
-	case DEVFREQ_GOV_INTERVAL:
+	case DEVFREQ_GOV_UPDATE_INTERVAL:
 		/* fallthrough, this governor doesn't use polling */
 	default:
 		result = 0;

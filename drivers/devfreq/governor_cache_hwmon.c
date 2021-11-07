@@ -362,7 +362,7 @@ static int devfreq_cache_hwmon_ev_handler(struct devfreq *df,
 		stop_monitoring(df);
 		dev_dbg(df->dev.parent, "Disabled Cache HW monitor governor\n");
 		break;
-	case DEVFREQ_GOV_INTERVAL:
+	case DEVFREQ_GOV_UPDATE_INTERVAL:
 		sample_ms = *(unsigned int *)data;
 		sample_ms = max(MIN_MS, sample_ms);
 		sample_ms = min(MAX_MS, sample_ms);

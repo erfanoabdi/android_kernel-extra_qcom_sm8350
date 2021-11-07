@@ -421,7 +421,7 @@ static int devfreq_memlat_ev_handler(struct devfreq *df,
 		dev_dbg(df->dev.parent, "Resumed memlat governor\n");
 		break;
 
-	case DEVFREQ_GOV_INTERVAL:
+	case DEVFREQ_GOV_UPDATE_INTERVAL:
 		node = df->data;
 		hw = node->hw;
 		sample_ms = *(unsigned int *)data;

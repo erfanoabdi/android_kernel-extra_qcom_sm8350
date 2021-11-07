@@ -886,7 +886,7 @@ static int devfreq_bw_hwmon_ev_handler(struct devfreq *df,
 		dev_dbg(df->dev.parent,
 			"Disabled dev BW HW monitor governor\n");
 		break;
-	case DEVFREQ_GOV_INTERVAL:
+	case DEVFREQ_GOV_UPDATE_INTERVAL:
 		node = df->data;
 		sample_ms = *(unsigned int *)data;
 		if (sample_ms < node->sample_ms) {
