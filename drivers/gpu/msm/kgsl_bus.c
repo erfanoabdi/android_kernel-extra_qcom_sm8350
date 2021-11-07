@@ -54,22 +54,13 @@ static void set_ddr_qos(struct kgsl_device *device, int buslevel)
 	if (new_min_freq == cur_min_freq)
 		return;
 
-	/*
-	 * We need the event lock to protect against concurrent governor
-	 * re-assignments.
-	 */
-	//event_mutex_lock(dev);
-	mutex_lock(&dev->lock);
+
 	/*
 	 * Update both min/max to make sure correct vote is set regardless
 	 * of the governor, which can be changed from sysfs
 	 */
-	dev->min_freq = new_min_freq;
-	dev->max_freq = new_min_freq;
-	ret = update_devfreq(dev);
-	mutex_unlock(&dev->lock);
-	//event_mutex_unlock(dev);
-
+	ret = dev_pm_qos_update_request(&dev->user_min_freq_req, new_min_freq);
+	ret = dev_pm_qos_update_request(&dev->user_max_freq_req, new_min_freq);
 	if (!ret)
 		cur_min_freq = new_min_freq;
 }
