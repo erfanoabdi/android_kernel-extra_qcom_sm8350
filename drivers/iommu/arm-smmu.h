@@ -11,6 +11,7 @@
 #define _ARM_SMMU_H
 
 #include <linux/atomic.h>
+#include <linux/bitfield.h>
 #include <linux/bits.h>
 #include <linux/clk.h>
 #include <linux/device.h>
@@ -174,10 +175,6 @@ enum arm_smmu_cbar_type {
 #define RESUME_TERMINATE		BIT(0)
 
 #define ARM_SMMU_CB_TCR2		0x10
-#define TCR2_SEP			GENMASK(17, 15)
-#define TCR2_SEP_UPSTREAM		0x7
-#define TCR2_AS				BIT(4)
-
 #define ARM_SMMU_TCR2_SEP		GENMASK(17, 15)
 #define ARM_SMMU_TCR2_SEP_UPSTREAM	0x7
 #define ARM_SMMU_TCR2_AS		BIT(4)
@@ -201,10 +198,13 @@ enum arm_smmu_cbar_type {
 #define TCR0_TG0_16K			0x2
 
 #define ARM_SMMU_TCR_EAE		BIT(31)
+#define ARM_SMMU_TCR_EPD1		BIT(23)
+#define ARM_SMMU_TCR_A1			BIT(22)
 #define ARM_SMMU_TCR_TG0		GENMASK(15, 14)
 #define ARM_SMMU_TCR_SH0		GENMASK(13, 12)
 #define ARM_SMMU_TCR_ORGN0		GENMASK(11, 10)
 #define ARM_SMMU_TCR_IRGN0		GENMASK(9, 8)
+#define ARM_SMMU_TCR_EPD0		BIT(7)
 #define ARM_SMMU_TCR_T0SZ		GENMASK(5, 0)
 
 #define ARM_SMMU_VTCR_RES1		BIT(31)
