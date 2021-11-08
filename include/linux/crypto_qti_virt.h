@@ -8,7 +8,7 @@
 
 #include <linux/errno.h>
 #include <linux/types.h>
-#include <linux/bio-crypt-ctx.h>
+#include <linux/blk-crypto.h>
 
 #define RAW_SECRET_SIZE 32
 
