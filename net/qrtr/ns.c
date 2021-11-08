@@ -790,8 +790,7 @@ void qrtr_ns_init(void)
 		pr_err("failed to bind to socket\n");
 		goto err_wq;
 	}
-	kernel_setsockopt(qrtr_ns.sock, SOL_SOCKET, SO_RCVBUF,
-			  (char *)&rx_buf_sz, sizeof(rx_buf_sz));
+	sock_set_rcvbuf(qrtr_ns.sock->sk, rx_buf_sz);
 
 	qrtr_ns.bcast_sq.sq_family = AF_QIPCRTR;
 	qrtr_ns.bcast_sq.sq_node = QRTR_NODE_BCAST;
