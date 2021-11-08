@@ -19,11 +19,11 @@ int wcnss_wlan_crypto_ahash_digest(struct ahash_request *req);
 void wcnss_wlan_crypto_free_ahash(struct crypto_ahash *tfm);
 int wcnss_wlan_crypto_ahash_setkey(struct crypto_ahash *tfm,
 				   const u8 *key, unsigned int keylen);
-struct crypto_ablkcipher *
-wcnss_wlan_crypto_alloc_ablkcipher(const char *alg_name, u32 type, u32 mask);
-void wcnss_wlan_ablkcipher_request_free(struct ablkcipher_request *req);
+struct crypto_skcipher *
+wcnss_wlan_crypto_alloc_skcipher(const char *alg_name, u32 type, u32 mask);
+void wcnss_wlan_skcipher_request_free(struct skcipher_request *req);
 void wcnss_wlan_crypto_free_cipher(struct crypto_cipher *tfm);
-void wcnss_wlan_crypto_free_ablkcipher(struct crypto_ablkcipher *tfm);
+void wcnss_wlan_crypto_free_skcipher(struct crypto_skcipher *tfm);
 struct crypto_cipher *
 wcnss_wlan_crypto_alloc_cipher(const char *alg_name, u32 type, u32 mask);
 void wcnss_wlan_cmac_calc_mic(struct crypto_cipher *tfm, u8 *m,

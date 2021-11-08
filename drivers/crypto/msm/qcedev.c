@@ -1200,8 +1200,8 @@ static int qcedev_vbuf_ablk_cipher_max_xfer(struct qcedev_async_req *areq,
 					k_align_dst,
 					areq->cipher_op_req.data_len);
 
-	areq->cipher_req.creq.nbytes = areq->cipher_op_req.data_len;
-	areq->cipher_req.creq.info = areq->cipher_op_req.iv;
+	areq->cipher_req.creq.cryptlen = areq->cipher_op_req.data_len;
+	areq->cipher_req.creq.iv = areq->cipher_op_req.iv;
 	areq->cipher_op_req.entries = 1;
 
 	err = submit_req(areq, handle);

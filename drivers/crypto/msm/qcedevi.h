@@ -11,6 +11,7 @@
 #include <linux/interrupt.h>
 #include <linux/cdev.h>
 #include <crypto/hash.h>
+#include <crypto/skcipher.h>
 #include <linux/platform_data/qcom_crypto_device.h>
 #include <linux/fips_status.h>
 #include "qce.h"
@@ -28,7 +29,7 @@ enum qcedev_crypto_oper_type {
 struct qcedev_handle;
 
 struct qcedev_cipher_req {
-	struct ablkcipher_request creq;
+	struct skcipher_request creq;
 	void *cookie;
 };
 

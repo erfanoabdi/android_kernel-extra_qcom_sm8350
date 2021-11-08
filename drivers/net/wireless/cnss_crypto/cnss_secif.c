@@ -33,17 +33,17 @@ int wcnss_wlan_crypto_ahash_setkey(struct crypto_ahash *tfm, const u8 *key,
 }
 EXPORT_SYMBOL(wcnss_wlan_crypto_ahash_setkey);
 
-void wcnss_wlan_ablkcipher_request_free(struct ablkcipher_request *req)
+void wcnss_wlan_skcipher_request_free(struct skcipher_request *req)
 {
-	ablkcipher_request_free(req);
+	skcipher_request_free(req);
 }
-EXPORT_SYMBOL(wcnss_wlan_ablkcipher_request_free);
+EXPORT_SYMBOL(wcnss_wlan_skcipher_request_free);
 
-void wcnss_wlan_crypto_free_ablkcipher(struct crypto_ablkcipher *tfm)
+void wcnss_wlan_crypto_free_skcipher(struct crypto_skcipher *tfm)
 {
-	crypto_free_ablkcipher(tfm);
+	crypto_free_skcipher(tfm);
 }
-EXPORT_SYMBOL(wcnss_wlan_crypto_free_ablkcipher);
+EXPORT_SYMBOL(wcnss_wlan_crypto_free_skcipher);
 
 void wcnss_wlan_crypto_free_cipher(struct crypto_cipher *tfm)
 {
