@@ -135,7 +135,7 @@ static int cqhci_crypto_qti_derive_raw_secret(struct keyslot_manager *ksm,
 	return err;
 }
 
-static const struct keyslot_mgmt_ll_ops cqhci_crypto_qti_ksm_ops = {
+static const struct blk_ksm_ll_ops cqhci_crypto_qti_ksm_ops = {
 	.keyslot_program	= cqhci_crypto_qti_keyslot_program,
 	.keyslot_evict		= cqhci_crypto_qti_keyslot_evict,
 	.derive_raw_secret	= cqhci_crypto_qti_derive_raw_secret
@@ -156,7 +156,7 @@ enum blk_crypto_mode_num cqhci_blk_crypto_qti_mode_num_for_alg_dusize(
 }
 
 int cqhci_host_init_crypto_qti_spec(struct cqhci_host *host,
-				    const struct keyslot_mgmt_ll_ops *ksm_ops)
+				    const struct blk_ksm_ll_ops *ksm_ops)
 {
 	int cap_idx = 0;
 	int err = 0;
@@ -241,7 +241,7 @@ out:
 }
 
 int cqhci_crypto_qti_init_crypto(struct cqhci_host *host,
-				const struct keyslot_mgmt_ll_ops *ksm_ops)
+				const struct blk_ksm_ll_ops *ksm_ops)
 {
 	int err = 0;
 	struct resource *cqhci_ice_memres = NULL;

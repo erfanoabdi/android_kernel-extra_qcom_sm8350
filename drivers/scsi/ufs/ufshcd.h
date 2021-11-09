@@ -395,14 +395,14 @@ struct ufs_hba_variant_ops {
 	ANDROID_KABI_RESERVE(4);
 };
 
-struct keyslot_mgmt_ll_ops;
+struct blk_ksm_ll_ops;
 struct ufs_hba_crypto_variant_ops {
 	void (*setup_rq_keyslot_manager)(struct ufs_hba *hba,
 					 struct request_queue *q);
 	void (*destroy_rq_keyslot_manager)(struct ufs_hba *hba,
 					   struct request_queue *q);
 	int (*hba_init_crypto)(struct ufs_hba *hba,
-			       const struct keyslot_mgmt_ll_ops *ksm_ops);
+			       const struct blk_ksm_ll_ops *ksm_ops);
 	void (*enable)(struct ufs_hba *hba);
 	void (*disable)(struct ufs_hba *hba);
 	int (*suspend)(struct ufs_hba *hba, enum ufs_pm_op pm_op);

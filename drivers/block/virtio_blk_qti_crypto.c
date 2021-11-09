@@ -109,7 +109,7 @@ static int virtblk_crypto_qti_derive_raw_secret(struct keyslot_manager *ksm,
 	return err;
 }
 
-static const struct keyslot_mgmt_ll_ops virtio_blk_crypto_qti_ksm_ops = {
+static const struct blk_ksm_ll_ops virtio_blk_crypto_qti_ksm_ops = {
 	.keyslot_program        = virtblk_crypto_qti_keyslot_program,
 	.keyslot_evict          = virtblk_crypto_qti_keyslot_evict,
 	.derive_raw_secret      = virtblk_crypto_qti_derive_raw_secret,

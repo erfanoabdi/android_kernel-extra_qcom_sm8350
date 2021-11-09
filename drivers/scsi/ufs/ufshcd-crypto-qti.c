@@ -223,7 +223,7 @@ static int ufshcd_crypto_qti_derive_raw_secret(struct keyslot_manager *ksm,
 	return err;
 }
 
-static const struct keyslot_mgmt_ll_ops ufshcd_crypto_qti_ksm_ops = {
+static const struct blk_ksm_ll_ops ufshcd_crypto_qti_ksm_ops = {
 	.keyslot_program	= ufshcd_crypto_qti_keyslot_program,
 	.keyslot_evict		= ufshcd_crypto_qti_keyslot_evict,
 	.derive_raw_secret	= ufshcd_crypto_qti_derive_raw_secret,
@@ -244,7 +244,7 @@ static enum blk_crypto_mode_num ufshcd_blk_crypto_qti_mode_num_for_alg_dusize(
 }
 
 static int ufshcd_hba_init_crypto_qti_spec(struct ufs_hba *hba,
-				    const struct keyslot_mgmt_ll_ops *ksm_ops)
+				    const struct blk_ksm_ll_ops *ksm_ops)
 {
 	int cap_idx = 0;
 	int err = 0;
@@ -323,7 +323,7 @@ out:
 }
 
 int ufshcd_crypto_qti_init_crypto(struct ufs_hba *hba,
-				  const struct keyslot_mgmt_ll_ops *ksm_ops)
+				  const struct blk_ksm_ll_ops *ksm_ops)
 {
 	int err = 0;
 	struct platform_device *pdev = to_platform_device(hba->dev);
