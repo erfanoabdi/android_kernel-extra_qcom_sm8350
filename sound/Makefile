@@ -1,1 +1,1 @@
-obj-y	:= usb/
+# obj-y	:= usb/
