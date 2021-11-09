@@ -3,5 +3,5 @@
 # Makefile for the input core drivers.
 #
 
-obj-$(CONFIG_INPUT_TOUCHSCREEN)	+= touchscreen/
+# obj-$(CONFIG_INPUT_TOUCHSCREEN)	+= touchscreen/
 obj-$(CONFIG_INPUT_MISC)	+= misc/
