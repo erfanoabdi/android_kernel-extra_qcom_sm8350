@@ -464,6 +464,7 @@ int dp_connector_get_info(struct drm_connector *connector,
 }
 
 enum drm_connector_status dp_connector_detect(struct drm_connector *conn,
+		struct drm_modeset_acquire_ctx *ctx,
 		bool force,
 		void *display)
 {

@@ -73,6 +73,7 @@ int dp_connector_post_init(struct drm_connector *connector, void *display);
  * Returns: Connector 'is connected' status
  */
 enum drm_connector_status dp_connector_detect(struct drm_connector *conn,
+		struct drm_modeset_acquire_ctx *ctx,
 		bool force,
 		void *display);
 
@@ -193,6 +194,7 @@ static inline int dp_connector_post_init(struct drm_connector *connector,
 
 static inline enum drm_connector_status dp_connector_detect(
 		struct drm_connector *conn,
+		struct drm_modeset_acquire_ctx *ctx,
 		bool force,
 		void *display)
 {

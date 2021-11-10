@@ -151,6 +151,7 @@ int sde_wb_connector_set_info_blob(struct drm_connector *connector,
  */
 enum drm_connector_status
 sde_wb_connector_detect(struct drm_connector *connector,
+		struct drm_modeset_acquire_ctx *ctx,
 		bool force,
 		void *display);
 
@@ -295,6 +296,7 @@ int sde_wb_connector_post_init(struct drm_connector *connector,
 static inline
 enum drm_connector_status
 sde_wb_connector_detect(struct drm_connector *connector,
+		struct drm_modeset_acquire_ctx *ctx,
 		bool force,
 		void *display)
 {
@@ -359,4 +361,3 @@ int sde_wb_get_mode_info(struct drm_connector *connector,
 }
 #endif /* CONFIG_DRM_SDE_WB */
 #endif /* __SDE_WB_H__ */
-

@@ -66,6 +66,7 @@ struct dp_drm_mst_fw_helper_ops {
 	int (*update_payload_part2)(struct drm_dp_mst_topology_mgr *mgr);
 	enum drm_connector_status (*detect_port)(
 		struct drm_connector *connector,
+		struct drm_modeset_acquire_ctx *ctx,
 		struct drm_dp_mst_topology_mgr *mgr,
 		struct drm_dp_mst_port *port);
 	struct edid *(*get_edid)(struct drm_connector *connector,
@@ -632,6 +633,7 @@ static void dp_mst_sim_handle_hpd_irq(void *dp_display,
 
 static enum drm_connector_status dp_mst_detect_port(
 			struct drm_connector *connector,
+			struct drm_modeset_acquire_ctx *ctx,
 			struct drm_dp_mst_topology_mgr *mgr,
 			struct drm_dp_mst_port *port)
 {
@@ -640,7 +642,7 @@ static enum drm_connector_status dp_mst_detect_port(
 	enum drm_connector_status status = connector_status_disconnected;
 
 	if (mst->mst_session_state)
-		status = drm_dp_mst_detect_port(connector, mgr, port);
+		status = drm_dp_mst_detect_port(connector, ctx, mgr, port);
 
 	DP_MST_DEBUG("mst port status: %d, session state: %d\n",
 		status, mst->mst_session_state);
@@ -1350,7 +1352,9 @@ void dp_mst_drm_bridge_deinit(void *display)
 /* DP MST Connector OPs */
 
 static enum drm_connector_status
-dp_mst_connector_detect(struct drm_connector *connector, bool force,
+dp_mst_connector_detect(struct drm_connector *connector,
+		struct drm_modeset_acquire_ctx *ctx,
+		bool force,
 		void *display)
 {
 	struct sde_connector *c_conn = to_sde_connector(connector);
@@ -1363,6 +1367,7 @@ dp_mst_connector_detect(struct drm_connector *connector, bool force,
 	SDE_EVT32_EXTERNAL(SDE_EVTLOG_FUNC_ENTRY);
 
 	status = mst->mst_fw_cbs->detect_port(connector,
+			ctx,
 			&mst->mst_mgr,
 			c_conn->mst_port);
 
@@ -1506,7 +1511,7 @@ int dp_mst_connector_get_info(struct drm_connector *connector,
 	rc = dp_connector_get_info(connector, info, display);
 
 	if (!rc) {
-		status = dp_mst_connector_detect(connector, false, display);
+		status = dp_mst_connector_detect(connector, NULL, false, display);
 
 		if (status == connector_status_connected)
 			info->is_connected = true;
@@ -1858,7 +1863,9 @@ dp_mst_add_connector(struct drm_dp_mst_topology_mgr *mgr,
 }
 
 static enum drm_connector_status
-dp_mst_fixed_connector_detect(struct drm_connector *connector, bool force,
+dp_mst_fixed_connector_detect(struct drm_connector *connector,
+			struct drm_modeset_acquire_ctx *ctx,
+			bool force,
 			void *display)
 {
 	struct dp_display *dp_display = display;
@@ -1872,7 +1879,7 @@ dp_mst_fixed_connector_detect(struct drm_connector *connector, bool force,
 		if (!mst->mst_bridge[i].fixed_port_added)
 			break;
 
-		return dp_mst_connector_detect(connector, force, display);
+		return dp_mst_connector_detect(connector, ctx, force, display);
 	}
 
 	return connector_status_disconnected;

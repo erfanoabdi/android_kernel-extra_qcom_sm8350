@@ -48,6 +48,7 @@ int dsi_conn_set_info_blob(struct drm_connector *connector,
  * Returns: Connector 'is connected' status
  */
 enum drm_connector_status dsi_conn_detect(struct drm_connector *conn,
+		struct drm_modeset_acquire_ctx *ctx,
 		bool force,
 		void *display);
 

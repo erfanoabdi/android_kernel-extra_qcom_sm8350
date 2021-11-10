@@ -49,6 +49,7 @@ static int sde_wb_is_format_valid(struct sde_wb_device *wb_dev,
 
 enum drm_connector_status
 sde_wb_connector_detect(struct drm_connector *connector,
+		struct drm_modeset_acquire_ctx *ctx,
 		bool force,
 		void *display)
 {

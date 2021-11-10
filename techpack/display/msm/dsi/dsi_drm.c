@@ -953,6 +953,7 @@ end:
 }
 
 enum drm_connector_status dsi_conn_detect(struct drm_connector *conn,
+		struct drm_modeset_acquire_ctx *ctx,
 		bool force,
 		void *display)
 {

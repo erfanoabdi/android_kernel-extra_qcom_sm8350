@@ -1720,10 +1720,11 @@ static void sde_connector_update_colorspace(struct drm_connector *connector)
 		SDE_ERROR("failed to set colorspace property for connector\n");
 }
 
-static enum drm_connector_status
-sde_connector_detect(struct drm_connector *connector, bool force)
+static int
+sde_connector_detect(struct drm_connector *connector,
+		struct drm_modeset_acquire_ctx *ctx, bool force)
 {
-	enum drm_connector_status status = connector_status_unknown;
+	int status = connector_status_unknown;
 	struct sde_connector *c_conn;
 
 	if (!connector) {
@@ -1735,6 +1736,7 @@ sde_connector_detect(struct drm_connector *connector, bool force)
 
 	if (c_conn->ops.detect)
 		status = c_conn->ops.detect(connector,
+				ctx,
 				force,
 				c_conn->display);
 
@@ -2304,7 +2306,6 @@ static int sde_connector_fill_modes(struct drm_connector *connector,
 
 static const struct drm_connector_funcs sde_connector_ops = {
 	.reset =                  sde_connector_atomic_reset,
-	.detect =                 sde_connector_detect,
 	.destroy =                sde_connector_destroy,
 	.fill_modes =             sde_connector_fill_modes,
 	.atomic_duplicate_state = sde_connector_atomic_duplicate_state,
@@ -2555,6 +2556,7 @@ static const struct drm_connector_helper_funcs sde_connector_helper_ops = {
 	.mode_valid =   sde_connector_mode_valid,
 	.best_encoder = sde_connector_best_encoder,
 	.atomic_check = sde_connector_atomic_check,
+	.detect_ctx = sde_connector_detect,
 };
 
 static const struct drm_connector_helper_funcs sde_connector_helper_ops_v2 = {
@@ -2563,6 +2565,7 @@ static const struct drm_connector_helper_funcs sde_connector_helper_ops_v2 = {
 	.best_encoder = sde_connector_best_encoder,
 	.atomic_best_encoder = sde_connector_atomic_best_encoder,
 	.atomic_check = sde_connector_atomic_check,
+	.detect_ctx = sde_connector_detect,
 };
 
 static int sde_connector_populate_mode_info(struct drm_connector *conn,

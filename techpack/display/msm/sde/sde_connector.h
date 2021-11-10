@@ -60,6 +60,7 @@ struct sde_connector_ops {
 	 * Returns: Connector 'is connected' status
 	 */
 	enum drm_connector_status (*detect)(struct drm_connector *connector,
+			struct drm_modeset_acquire_ctx *ctx,
 			bool force,
 			void *display);
 
