@@ -322,7 +322,7 @@ static void dp_mst_sim_add_port(struct dp_mst_private *mst,
 	mutex_unlock(&mstb->mgr->lock);
 
 	/* use fixed pbn for simulator ports */
-	port->available_pbn = 2520;
+	port->full_pbn = 2520;
 
 	if (!port->input) {
 		port->connector = (*mstb->mgr->cbs->add_connector)
@@ -1465,7 +1465,7 @@ enum drm_mode_status dp_mst_connector_mode_valid(
 	}
 
 	if (active_enc_cnt < DP_STREAM_MAX) {
-		available_pbn = mst_port->available_pbn;
+		available_pbn = mst_port->full_pbn;
 		available_slots = tot_slots - slots_in_use;
 	} else {
 		DP_DEBUG("all mst streams are active\n");
