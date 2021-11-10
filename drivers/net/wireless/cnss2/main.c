@@ -1058,7 +1058,7 @@ static int cnss_register_esoc(struct cnss_plat_data *plat_priv)
 	} else {
 		esoc_desc = devm_register_esoc_client(dev, client_desc);
 		if (IS_ERR_OR_NULL(esoc_desc)) {
-			ret = PTR_RET(esoc_desc);
+			ret = PTR_ERR_OR_ZERO(esoc_desc);
 			cnss_pr_err("Failed to register esoc_desc, err = %d\n",
 				    ret);
 			goto out;

@@ -3007,7 +3007,7 @@ static int cnss_probe(struct platform_device *pdev)
 		} else {
 			desc = devm_register_esoc_client(dev, client_desc);
 			if (IS_ERR_OR_NULL(desc)) {
-				ret = PTR_RET(desc);
+				ret = PTR_ERR_OR_ZERO(desc);
 				pr_err("%s: can't find esoc desc\n", __func__);
 				goto err_esoc_reg;
 			}
