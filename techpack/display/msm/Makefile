@@ -1,10 +1,10 @@
 # SPDX-License-Identifier: GPL-2.0
-ccflags-y := -I$(srctree)/include/drm -I$(srctree)/techpack/display/msm -I$(srctree)/techpack/display/msm/dsi -I$(srctree)/techpack/display/msm/dp
-ccflags-y += -I$(srctree)/techpack/display/msm/sde
-ccflags-y += -I$(srctree)/techpack/display/rotator
-ccflags-y += -I$(srctree)/techpack/display/hdcp
-ccflags-y += -I$(srctree)/drivers/clk/qcom/
-ccflags-y += -I$(srctree)/techpack/display/msm/mi_disp
+ccflags-y := -I$(srctree)/include/drm -I$(M)/techpack/display/msm -I$(M)/techpack/display/msm/dsi -I$(M)/techpack/display/msm/dp
+ccflags-y += -I$(M)/techpack/display/msm/sde
+ccflags-y += -I$(M)/techpack/display/rotator
+ccflags-y += -I$(M)/techpack/display/hdcp
+ccflags-y += -I$(M)/drivers/clk/qcom/
+ccflags-y += -I$(M)/techpack/display/msm/mi_disp
 
 msm_drm-$(CONFIG_DRM_MSM_DP) += dp/dp_altmode.o \
 	dp/dp_parser.o \
