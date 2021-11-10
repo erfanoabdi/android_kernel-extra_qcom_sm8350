@@ -6585,7 +6585,7 @@ int dsi_display_drm_ext_bridge_init(struct dsi_display *display,
 		ext_conn = list_last_entry(&drm->mode_config.connector_list,
 			struct drm_connector, head);
 		if (ext_conn && ext_conn != connector &&
-			ext_conn->encoder_ids[0] == bridge->encoder->base.id) {
+			ext_conn->possible_encoders != 0) {
 			list_del_init(&ext_conn->head);
 			display->ext_conn = ext_conn;
 		}

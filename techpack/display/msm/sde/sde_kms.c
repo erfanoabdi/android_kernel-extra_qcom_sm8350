@@ -3006,8 +3006,8 @@ static int sde_kms_inform_cont_splash_res_disable(struct msm_kms *kms,
 			if (!dsi_display || !encoder) {
 				sde_conn->ops.cont_splash_res_disable
 						(sde_conn->display);
-			} else if (connector->encoder_ids[0]
-					== encoder->base.id) {
+			} else if (connector->possible_encoders
+					!= 0) {
 				/**
 				 * This handles dual DSI
 				 * configuration where one DSI
@@ -3197,7 +3197,7 @@ static int sde_kms_cont_splash_config(struct msm_kms *kms,
 			 * ever have to support continuous splash for
 			 * external displays in MST configuration.
 			 */
-			if (connector->encoder_ids[0] == encoder->base.id)
+			if (connector->possible_encoders != 0)
 				break;
 		}
 		drm_connector_list_iter_end(&conn_iter);
