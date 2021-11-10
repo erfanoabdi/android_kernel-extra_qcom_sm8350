@@ -7,6 +7,8 @@
 #include <soc/qcom/rpmh.h>
 
 #if IS_ENABLED(CONFIG_QCOM_RPMH)
+int rpmh_flush(const struct device *dev);
+
 int rpmh_mode_solver_set(const struct device *dev, bool enable);
 
 int rpmh_ctrlr_idle(const struct device *dev);
@@ -15,6 +17,9 @@ int rpmh_write_pdc_data(const struct device *dev,
 			const struct tcs_cmd *cmd, u32 n);
 
 #else
+static inline int rpmh_flush(const struct device *dev)
+{ return -ENODEV; }
+
 static inline int rpmh_mode_solver_set(const struct device *dev, bool enable)
 { return -ENODEV; }
 
