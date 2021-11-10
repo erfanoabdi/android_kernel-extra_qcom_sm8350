@@ -2817,7 +2817,7 @@ static void dp_display_validate_mst_connectors(struct dp_debug *debug,
 
 		_hdis = mode->hdisplay;
 		_vdis = mode->vdisplay;
-		_vref = mode->vrefresh;
+		_vref = drm_mode_vrefresh(mode);
 		_ar = mode->picture_aspect_ratio;
 
 		if (hdis == _hdis && vdis == _vdis && vref == _vref &&
@@ -2905,7 +2905,7 @@ static enum drm_mode_status dp_display_validate_mode(
 
 	if (debug->debug_en && (mode->hdisplay != debug->hdisplay ||
 			mode->vdisplay != debug->vdisplay ||
-			mode->vrefresh != debug->vrefresh ||
+			drm_mode_vrefresh(mode) != debug->vrefresh ||
 			mode->picture_aspect_ratio != debug->aspect_ratio))
 		goto end;
 

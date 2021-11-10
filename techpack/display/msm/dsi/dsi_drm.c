@@ -68,7 +68,7 @@ static void convert_to_dsi_mode(const struct drm_display_mode *drm_mode,
 	dsi_mode->timing.v_front_porch = drm_mode->vsync_start -
 					 drm_mode->vdisplay;
 
-	dsi_mode->timing.refresh_rate = drm_mode->vrefresh;
+	dsi_mode->timing.refresh_rate = drm_mode_vrefresh(drm_mode);
 
 	dsi_mode->pixel_clk_khz = drm_mode->clock;
 
@@ -131,7 +131,6 @@ void dsi_convert_to_drm_mode(const struct dsi_display_mode *dsi_mode,
 			      dsi_mode->timing.v_sync_width;
 	drm_mode->vtotal = drm_mode->vsync_end + dsi_mode->timing.v_back_porch;
 
-	drm_mode->vrefresh = dsi_mode->timing.refresh_rate;
 	drm_mode->clock = dsi_mode->pixel_clk_khz;
 
 	drm_mode->private = (int *)dsi_mode->priv_info;
@@ -164,7 +163,7 @@ void dsi_convert_to_drm_mode(const struct dsi_display_mode *dsi_mode,
 	/* set mode name */
 	snprintf(drm_mode->name, DRM_DISPLAY_MODE_LEN, "%dx%dx%dx%d%s",
 			drm_mode->hdisplay, drm_mode->vdisplay,
-			drm_mode->vrefresh, drm_mode->clock,
+			drm_mode_vrefresh(drm_mode), drm_mode->clock,
 			video_mode ? "vid" : "cmd");
 }
 
@@ -720,7 +719,7 @@ u64 dsi_drm_find_bit_clk_rate(void *display,
 		if ((dsi_mode->timing.v_active == drm_mode->vdisplay) &&
 		    (dsi_mode->timing.h_active == drm_mode->hdisplay) &&
 		    (dsi_mode->pixel_clk_khz == drm_mode->clock) &&
-		    (dsi_mode->timing.refresh_rate == drm_mode->vrefresh)) {
+		    (dsi_mode->timing.refresh_rate == drm_mode_vrefresh(drm_mode))) {
 			bit_clk_rate = dsi_mode->timing.clk_rate_hz;
 			break;
 		}

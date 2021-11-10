@@ -40,7 +40,6 @@ void convert_to_drm_mode(const struct dp_display_mode *dp_mode,
 			      dp_mode->timing.v_sync_width;
 	drm_mode->vtotal = drm_mode->vsync_end + dp_mode->timing.v_back_porch;
 
-	drm_mode->vrefresh = dp_mode->timing.refresh_rate;
 	drm_mode->clock = dp_mode->timing.pixel_clk_khz;
 
 	if (dp_mode->timing.h_active_low)
@@ -418,7 +417,7 @@ int dp_connector_get_mode_info(struct drm_connector *connector,
 	topology->num_enc = no_enc;
 	topology->num_intf = single_intf;
 
-	mode_info->frame_rate = drm_mode->vrefresh;
+	mode_info->frame_rate = drm_mode_vrefresh(drm_mode);
 	mode_info->vtotal = drm_mode->vtotal;
 
 	mode_info->wide_bus_en = dp_panel->widebus_en;
@@ -669,7 +668,6 @@ enum drm_mode_status dp_connector_mode_valid(struct drm_connector *connector,
 	}
 
 	dp_disp = display;
-	mode->vrefresh = drm_mode_vrefresh(mode);
 
 	rc = dp_disp->get_available_dp_resources(dp_disp, avail_res,
 			&avail_dp_res);

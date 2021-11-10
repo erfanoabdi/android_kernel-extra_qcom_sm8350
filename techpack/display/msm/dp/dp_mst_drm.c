@@ -1067,9 +1067,8 @@ static void dp_mst_bridge_pre_enable(struct drm_bridge *drm_bridge)
 		_dp_mst_bridge_pre_enable_part2(bridge);
 	}
 
-	DP_MST_INFO("conn:%d mode:%s fps:%d dsc:%d vcpi:%d slots:%d to %d\n",
+	DP_MST_INFO("conn:%d mode:%s dsc:%d vcpi:%d slots:%d to %d\n",
 			DP_MST_CONN_ID(bridge), bridge->drm_mode.name,
-			bridge->drm_mode.vrefresh,
 			bridge->dp_mode.timing.comp_info.comp_ratio,
 			bridge->vcpi, bridge->start_slot,
 			bridge->start_slot + bridge->num_slots);
@@ -2468,4 +2467,3 @@ void dp_mst_deinit(struct dp_display *dp_display)
 
 	DP_MST_INFO("dp drm mst topology manager deinit completed\n");
 }
-

@@ -6316,7 +6316,7 @@ static int dsi_display_ext_get_mode_info(struct drm_connector *connector,
 		return -EINVAL;
 
 	memset(mode_info, 0, sizeof(*mode_info));
-	mode_info->frame_rate = drm_mode->vrefresh;
+	mode_info->frame_rate = drm_mode_vrefresh(drm_mode);
 	mode_info->vtotal = drm_mode->vtotal;
 
 	topology = &mode_info->topology;

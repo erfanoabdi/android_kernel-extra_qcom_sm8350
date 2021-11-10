@@ -2905,7 +2905,7 @@ static void dp_panel_convert_to_dp_mode(struct dp_panel *dp_panel,
 	dp_mode->timing.v_front_porch = drm_mode->vsync_start -
 					 drm_mode->vdisplay;
 
-	dp_mode->timing.refresh_rate = drm_mode->vrefresh;
+	dp_mode->timing.refresh_rate = drm_mode_vrefresh(drm_mode);
 
 	dp_mode->timing.pixel_clk_khz = drm_mode->clock;
 
