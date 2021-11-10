@@ -82,6 +82,7 @@
 #include <drm/drm_vblank.h>
 #include <drm/drm_irq.h>
 #include <drm/drm_device.h>
+#include <drm/drm_bridge.h>
 
 struct module;
 
