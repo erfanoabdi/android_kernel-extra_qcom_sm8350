@@ -26,6 +26,7 @@
 #include <linux/of_address.h>
 #include <linux/of_irq.h>
 #include <linux/dma-buf.h>
+#include <linux/dma-map-ops.h>
 #include <linux/memblock.h>
 #include <linux/iommu_caf.h>
 #include <drm/drm_atomic_uapi.h>

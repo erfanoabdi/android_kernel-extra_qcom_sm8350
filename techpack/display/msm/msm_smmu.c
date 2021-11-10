@@ -21,6 +21,7 @@
 #include <linux/pm_runtime.h>
 #include <linux/msm_dma_iommu_mapping.h>
 #include <linux/dma-mapping_caf.h>
+#include <linux/dma-map-ops.h>
 
 #include <soc/qcom/secure_buffer.h>
 
