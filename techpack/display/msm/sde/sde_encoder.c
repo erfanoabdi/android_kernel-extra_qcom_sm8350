@@ -5216,6 +5216,7 @@ int sde_encoder_update_caps_for_cont_splash(struct drm_encoder *encoder,
 	struct sde_connector_state *sde_conn_state = NULL;
 	struct drm_display_mode *drm_mode = NULL;
 	struct sde_encoder_phys *phys_enc;
+	struct drm_bridge *bridge;
 	int ret = 0, i;
 
 	if (!encoder) {
@@ -5316,7 +5317,8 @@ int sde_encoder_update_caps_for_cont_splash(struct drm_encoder *encoder,
 			drm_mode->hdisplay, drm_mode->vdisplay);
 	drm_set_preferred_mode(conn, drm_mode->hdisplay, drm_mode->vdisplay);
 
-	if (encoder->bridge) {
+	bridge = drm_bridge_chain_get_first_bridge(encoder);
+	if (bridge) {
 		SDE_DEBUG_ENC(sde_enc, "Bridge mapped to encoder\n");
 		/*
 		 * For cont-splash use case, we update the mode
@@ -5326,11 +5328,8 @@ int sde_encoder_update_caps_for_cont_splash(struct drm_encoder *encoder,
 		 * be updated with the current drm mode by
 		 * calling the bridge mode set ops.
 		 */
-		if (encoder->bridge->funcs) {
-			SDE_DEBUG_ENC(sde_enc, "calling mode_set\n");
-			encoder->bridge->funcs->mode_set(encoder->bridge,
-						drm_mode, drm_mode);
-		}
+		SDE_DEBUG_ENC(sde_enc, "calling mode_set\n");
+		drm_bridge_chain_mode_set(bridge, drm_mode, drm_mode);
 	} else {
 		SDE_ERROR_ENC(sde_enc, "No bridge attached to encoder\n");
 	}

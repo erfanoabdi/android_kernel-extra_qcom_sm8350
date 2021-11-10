@@ -1264,7 +1264,7 @@ int dsi_conn_post_kickoff(struct drm_connector *connector,
 		return 0;
 	}
 
-	c_bridge = to_dsi_bridge(encoder->bridge);
+	c_bridge = to_dsi_bridge(drm_bridge_chain_get_first_bridge(encoder));
 	adj_mode = c_bridge->dsi_mode;
 	display = c_bridge->display;
 	dyn_clk_caps = &(display->panel->dyn_clk_caps);
@@ -1342,8 +1342,6 @@ struct dsi_bridge *dsi_drm_bridge_init(struct dsi_display *display,
 		goto error_free_bridge;
 	}
 
-	encoder->bridge = &bridge->base;
-
 	bridge->is_dsi_drm_bridge = true;
 	mutex_init(&bridge->lock);
 
@@ -1374,9 +1372,6 @@ error:
 
 void dsi_drm_bridge_cleanup(struct dsi_bridge *bridge)
 {
-	if (bridge && bridge->base.encoder)
-		bridge->base.encoder->bridge = NULL;
-
 	if (bridge == gbridge) {
 		atomic_set(&prim_panel_is_on, false);
 		cancel_delayed_work_sync(&prim_panel_work);

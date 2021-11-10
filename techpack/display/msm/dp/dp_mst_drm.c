@@ -734,7 +734,7 @@ static const struct dp_drm_mst_fw_helper_ops drm_dp_sim_mst_fw_helper_ops = {
 
 /* DP MST Bridge OPs */
 
-static int dp_mst_bridge_attach(struct drm_bridge *dp_bridge)
+static int dp_mst_bridge_attach(struct drm_bridge *dp_bridge, enum drm_bridge_attach_flags flags)
 {
 	struct dp_mst_bridge *bridge;
 
@@ -743,6 +743,11 @@ static int dp_mst_bridge_attach(struct drm_bridge *dp_bridge)
 
 	if (!dp_bridge) {
 		DP_ERR("Invalid params\n");
+		return -EINVAL;
+	}
+
+	if (flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR) {
+		DP_ERR("Fix bridge driver to make connector optional!");
 		return -EINVAL;
 	}
 
@@ -1299,7 +1304,6 @@ int dp_mst_drm_bridge_init(void *data, struct drm_encoder *encoder)
 		goto end;
 	}
 
-	encoder->bridge = &bridge->base;
 	priv->bridges[priv->num_bridges++] = &bridge->base;
 
 	state = kzalloc(sizeof(*state), GFP_KERNEL);
@@ -1642,7 +1646,7 @@ static int dp_mst_connector_atomic_check(struct drm_connector *connector,
 		}
 
 		bridge = to_dp_mst_bridge(
-				old_conn_state->best_encoder->bridge);
+				drm_bridge_chain_get_first_bridge(old_conn_state->best_encoder));
 
 		bridge_state = dp_mst_get_bridge_atomic_state(state, bridge);
 		if (IS_ERR(bridge_state)) {
@@ -1691,7 +1695,7 @@ mode_set:
 		}
 
 		bridge = to_dp_mst_bridge(
-				new_conn_state->best_encoder->bridge);
+				drm_bridge_chain_get_first_bridge(new_conn_state->best_encoder));
 
 		bridge_state = dp_mst_get_bridge_atomic_state(state, bridge);
 		if (IS_ERR(bridge_state)) {
