@@ -2336,7 +2336,7 @@ int dsi_panel_get_io_resources(struct dsi_panel *panel,
 parse_fail:
 	list_for_each_entry_safe(pos, tmp, &temp_head, list) {
 		list_del(&pos->list);
-		kzfree(pos);
+		kfree_sensitive(pos);
 	}
 end:
 	return rc;
