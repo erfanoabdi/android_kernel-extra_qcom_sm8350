@@ -21,6 +21,7 @@
 #include <linux/dma-buf.h>
 #include <linux/pfn_t.h>
 #include <linux/ion.h>
+#include <linux/dma-mapping_caf.h>
 
 #include "msm_drv.h"
 #include "msm_gem.h"

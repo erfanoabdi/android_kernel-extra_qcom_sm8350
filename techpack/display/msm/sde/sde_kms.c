@@ -27,6 +27,7 @@
 #include <linux/of_irq.h>
 #include <linux/dma-buf.h>
 #include <linux/memblock.h>
+#include <linux/iommu_caf.h>
 #include <drm/drm_atomic_uapi.h>
 #include <drm/drm_probe_helper.h>
 
@@ -56,7 +57,7 @@
 
 #include "mi_sde_connector.h"
 
-#include <linux/qcom_scm.h>
+#include <linux/qcom_scm_caf.h>
 #include "soc/qcom/secure_buffer.h"
 #include <linux/qtee_shmbridge.h>
 #include <linux/haven/hh_irq_lend.h>

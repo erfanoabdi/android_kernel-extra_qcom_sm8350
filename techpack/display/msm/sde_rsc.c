@@ -17,7 +17,7 @@
 #include <linux/of_platform.h>
 #include <linux/module.h>
 
-#include <soc/qcom/rpmh.h>
+#include <soc/qcom/rpmh_caf.h>
 #include <drm/drmP.h>
 #include <drm/drm_irq.h>
 #include "sde_rsc_priv.h"
