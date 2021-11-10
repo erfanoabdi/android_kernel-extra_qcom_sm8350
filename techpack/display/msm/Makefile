@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-2.0
-ccflags-y := -I$(srctree)/include/drm -I$(M)/techpack/display/msm -I$(M)/techpack/display/msm/dsi -I$(M)/techpack/display/msm/dp
+ccflags-y := -I$(srctree)/include/drm -I$(M)/include/drm -I$(M)/techpack/display/msm -I$(M)/techpack/display/msm/dsi -I$(M)/techpack/display/msm/dp
 ccflags-y += -I$(M)/techpack/display/msm/sde
 ccflags-y += -I$(M)/techpack/display/rotator
 ccflags-y += -I$(M)/techpack/display/hdcp
