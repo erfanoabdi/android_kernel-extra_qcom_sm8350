@@ -240,12 +240,8 @@ int sde_dsc_populate_dsc_config(struct drm_dsc_config *dsc, int scr_ver) {
 	for (i = 0; i < DSC_NUM_BUF_RANGES; i++) {
 		dsc->rc_range_params[i].range_min_qp =
 			sde_dsc_rc_range_min_qp[ratio_idx][i];
-		if ((dsc->dsc_panel_id >> 8) == 0x4B39003602)
-			dsc->rc_range_params[i].range_max_qp =
-				sde_dsc_rc_range_max_qp_nt[ratio_idx][i];
-		else
-			dsc->rc_range_params[i].range_max_qp =
-				sde_dsc_rc_range_max_qp[ratio_idx][i];
+		dsc->rc_range_params[i].range_max_qp =
+			sde_dsc_rc_range_max_qp[ratio_idx][i];
 
 		dsc->rc_range_params[i].range_bpg_offset =
 			sde_dsc_rc_range_bpg[ratio_idx][i];
@@ -539,4 +535,3 @@ int sde_dsc_create_pps_buf_cmd(struct msm_display_dsc_info *dsc_info,
 
 	return 0;
 }
-
