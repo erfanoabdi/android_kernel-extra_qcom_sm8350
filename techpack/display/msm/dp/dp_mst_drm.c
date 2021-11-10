@@ -335,7 +335,7 @@ static void dp_mst_sim_add_port(struct dp_mst_private *mst,
 			dp_mst_sim_topology_put_port(port);
 			goto put_port;
 		}
-		(*mstb->mgr->cbs->register_connector)(port->connector);
+		drm_connector_register(port->connector);
 	}
 
 put_port:
