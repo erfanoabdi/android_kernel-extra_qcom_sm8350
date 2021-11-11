@@ -48,6 +48,4 @@
  */
 #define DMA_ATTR_IOMMU_USE_LLC_NWA	(1UL << 17)
 
-#define DMA_ERROR_CODE       (~(dma_addr_t)0)
-
 #endif
