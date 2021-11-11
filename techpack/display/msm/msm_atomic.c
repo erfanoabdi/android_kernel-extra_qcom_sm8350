@@ -624,8 +624,8 @@ static void msm_atomic_commit_dispatch(struct drm_device *dev,
 	if (ret) {
 		if (ret == -EINVAL)
 			DRM_ERROR("failed to dispatch commit to any CRTC\n");
-		else
-			DRM_DEBUG_DRIVER_RATELIMITED("empty crtc state\n");
+		//else
+		//	DRM_DEBUG_DRIVER_RATELIMITED("empty crtc state\n");
 
 		/**
 		 * this is not expected to happen, but at this point the state
