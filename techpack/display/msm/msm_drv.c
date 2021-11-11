@@ -1063,7 +1063,7 @@ static void msm_lastclose(struct drm_device *dev)
 		if (rc)
 			DRM_ERROR("restore FBDEV mode failed: %d\n", rc);
 	} else if (kms && kms->client.dev) {
-		rc = drm_client_modeset_commit_force(&kms->client);
+		rc = drm_client_modeset_commit_locked(&kms->client);
 		if (rc)
 			DRM_ERROR("client modeset commit failed: %d\n", rc);
 	}
