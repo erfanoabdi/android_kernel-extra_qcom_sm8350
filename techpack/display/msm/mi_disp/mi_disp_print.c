@@ -45,13 +45,13 @@ void mi_disp_dbg(const char *format, ...)
 
 void mi_disp_printk_utc(const char *level, const char *format, ...)
 {
-	struct timespec ts;
+	struct timespec64 ts;
 	struct rtc_time tm;
 	struct va_format vaf;
 	va_list args;
 
-	getnstimeofday(&ts);
-	rtc_time_to_tm(ts.tv_sec, &tm);
+	ktime_get_ts64(&ts);
+	rtc_time64_to_tm(ts.tv_sec, &tm);
 
 	va_start(args, format);
 	vaf.fmt = format;
@@ -68,7 +68,7 @@ void mi_disp_printk_utc(const char *level, const char *format, ...)
 
 void mi_disp_dbg_utc(const char *format, ...)
 {
-	struct timespec ts;
+	struct timespec64 ts;
 	struct rtc_time tm;
 	struct va_format vaf;
 	va_list args;
@@ -76,8 +76,8 @@ void mi_disp_dbg_utc(const char *format, ...)
 	if (!is_enable_debug_log())
 		return;
 
-	getnstimeofday(&ts);
-	rtc_time_to_tm(ts.tv_sec, &tm);
+	ktime_get_ts64(&ts);
+	rtc_time64_to_tm(ts.tv_sec, &tm);
 
 	va_start(args, format);
 	vaf.fmt = format;
@@ -91,4 +91,3 @@ void mi_disp_dbg_utc(const char *format, ...)
 
 	va_end(args);
 }
-
