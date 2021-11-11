@@ -3741,13 +3741,10 @@ struct dsi_panel *dsi_panel_get(struct device *parent,
 	}
 
 	panel->power_mode = SDE_MODE_DPMS_OFF;
-	drm_panel_init(&panel->drm_panel);
-	panel->drm_panel.dev = &panel->mipi_device.dev;
+	drm_panel_init(&panel->drm_panel, &panel->mipi_device.dev, NULL, DRM_MODE_CONNECTOR_DPI);
 	panel->mipi_device.dev.of_node = of_node;
 
-	rc = drm_panel_add(&panel->drm_panel);
-	if (rc)
-		goto error_vreg_put;
+	drm_panel_add(&panel->drm_panel);
 
 	mutex_init(&panel->panel_lock);
 
