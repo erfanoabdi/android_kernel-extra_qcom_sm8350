@@ -4444,8 +4444,8 @@ static u32 _sde_dbg_get_dump_range(struct sde_dbg_reg_offset *range_node,
 	return length;
 }
 
-static int _sde_dump_reg_range_cmp(void *priv, struct list_head *a,
-		struct list_head *b)
+static int _sde_dump_reg_range_cmp(void *priv, const struct list_head *a,
+		const struct list_head *b)
 {
 	struct sde_dbg_reg_range *ar, *br;
 
