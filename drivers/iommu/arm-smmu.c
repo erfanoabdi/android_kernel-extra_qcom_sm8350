@@ -4873,6 +4873,7 @@ static int arm_smmu_device_dt_probe(struct platform_device *pdev)
 {
 	const struct arm_smmu_match_data *data;
 	struct resource *res;
+	resource_size_t ioaddr;
 	struct arm_smmu_device *smmu;
 	struct device *dev = &pdev->dev;
 	int num_irqs, i, err;
@@ -4918,6 +4919,7 @@ static int arm_smmu_device_dt_probe(struct platform_device *pdev)
 		return -EINVAL;
 	}
 
+	ioaddr = res->start;
 	smmu->phys_addr = res->start;
 	smmu->base = devm_ioremap_resource(dev, res);
 	if (IS_ERR(smmu->base))
@@ -5002,6 +5004,13 @@ static int arm_smmu_device_dt_probe(struct platform_device *pdev)
 				i, smmu->irqs[i]);
 			goto out_power_off;
 		}
+	}
+
+	err = iommu_device_sysfs_add(&smmu->iommu, smmu->dev, NULL,
+				     "smmu.%pa", &ioaddr);
+	if (err) {
+		dev_err(dev, "Failed to register iommu in sysfs\n");
+		return err;
 	}
 
 	iommu_device_set_ops(&smmu->iommu, &arm_smmu_ops.iommu_ops);
