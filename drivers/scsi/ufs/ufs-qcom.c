@@ -1922,7 +1922,7 @@ static void ufs_qcom_advertise_quirks(struct ufs_hba *hba)
 	 * device tree doesn't include the crypto registers.  There are likely
 	 * to be other issues that will need to be addressed too.
 	 */
-	hba->quirks |= UFSHCD_QUIRK_BROKEN_CRYPTO;
+	hba->quirks |= UFSHCD_QUIRK_BROKEN_CRYPTO_ENABLE;
 }
 
 static void ufs_qcom_set_caps(struct ufs_hba *hba)

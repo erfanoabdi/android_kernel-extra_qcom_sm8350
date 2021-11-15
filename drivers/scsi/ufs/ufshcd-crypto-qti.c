@@ -98,9 +98,10 @@ static bool ice_cap_idx_valid(struct ufs_hba *hba,
 
 void ufshcd_crypto_qti_enable(struct ufs_hba *hba)
 {
+	int slot;
 	int err = 0;
 
-	if (!ufshcd_hba_is_crypto_supported(hba))
+	if (!(hba->caps & UFSHCD_CAP_CRYPTO))
 		return;
 
 	err = crypto_qti_enable(hba->crypto_vops->priv);
@@ -110,7 +111,10 @@ void ufshcd_crypto_qti_enable(struct ufs_hba *hba)
 		ufshcd_crypto_qti_disable(hba);
 	}
 
-	ufshcd_crypto_enable_spec(hba);
+	hba->caps |= UFSHCD_CAP_CRYPTO;
+	/* Clear all keyslots */
+	for (slot = 0; slot < hba->ksm.num_slots; slot++)
+		hba->ksm.ksm_ll_ops.keyslot_evict(&hba->ksm, NULL, slot);
 }
 
 void ufshcd_crypto_qti_disable(struct ufs_hba *hba)
@@ -338,7 +342,7 @@ int ufshcd_crypto_qti_init_crypto(struct ufs_hba *hba,
 	if (IS_ERR(mmio_base)) {
 		pr_err("%s: Unable to get ufs_crypto mmio base\n", __func__);
 		hba->caps &= ~UFSHCD_CAP_CRYPTO;
-		hba->quirks |= UFSHCD_QUIRK_BROKEN_CRYPTO;
+		hba->quirks |= UFSHCD_QUIRK_BROKEN_CRYPTO_ENABLE;
 		return err;
 	}
 
