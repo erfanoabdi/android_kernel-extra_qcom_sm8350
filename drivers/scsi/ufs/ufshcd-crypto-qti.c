@@ -16,6 +16,17 @@
 
 #define NUM_KEYSLOTS(hba) (hba->crypto_capabilities.config_count + 1)
 
+/* Blk-crypto modes supported by UFS crypto */
+static const struct ufs_crypto_alg_entry {
+	enum ufs_crypto_alg ufs_alg;
+	enum ufs_crypto_key_size ufs_key_size;
+} ufs_crypto_algs[BLK_ENCRYPTION_MODE_MAX] = {
+	[BLK_ENCRYPTION_MODE_AES_256_XTS] = {
+		.ufs_alg = UFS_CRYPTO_ALG_AES_XTS,
+		.ufs_key_size = UFS_CRYPTO_KEY_SIZE_256,
+	},
+};
+
 static uint8_t get_data_unit_size_mask(unsigned int data_unit_size)
 {
 	if (data_unit_size < MINIMUM_DUN_SIZE ||
@@ -24,12 +35,6 @@ static uint8_t get_data_unit_size_mask(unsigned int data_unit_size)
 		return 0;
 
 	return data_unit_size / MINIMUM_DUN_SIZE;
-}
-
-static bool ice_cap_idx_valid(struct ufs_hba *hba,
-			      unsigned int cap_idx)
-{
-	return cap_idx < hba->crypto_capabilities.num_crypto_cap;
 }
 
 void ufshcd_crypto_qti_enable(struct ufs_hba *hba)
@@ -60,24 +65,31 @@ void ufshcd_crypto_qti_disable(struct ufs_hba *hba)
 }
 
 
-static int ufshcd_crypto_qti_keyslot_program(struct keyslot_manager *ksm,
+static int ufshcd_crypto_qti_keyslot_program(struct blk_keyslot_manager *ksm,
 					     const struct blk_crypto_key *key,
 					     unsigned int slot)
 {
-	struct ufs_hba *hba = keyslot_manager_private(ksm);
+	struct ufs_hba *hba = container_of(ksm, struct ufs_hba, ksm);
+	const union ufs_crypto_cap_entry *ccap_array = hba->crypto_cap_array;
+	const struct ufs_crypto_alg_entry *alg =
+			&ufs_crypto_algs[key->crypto_cfg.crypto_mode];
 	int err = 0;
+	int i;
 	u8 data_unit_mask;
-	int crypto_alg_id;
+	int crypto_alg_id = -1;
 
-	crypto_alg_id = ufshcd_crypto_cap_find(hba, key->crypto_mode,
-					       key->data_unit_size);
+	data_unit_mask = get_data_unit_size_mask(key->crypto_cfg.data_unit_size);
+	for (i = 0; i < hba->crypto_capabilities.num_crypto_cap; i++) {
+		if (ccap_array[i].algorithm_id == alg->ufs_alg &&
+		    ccap_array[i].key_size == alg->ufs_key_size &&
+		    (ccap_array[i].sdus_mask & data_unit_mask)) {
+			crypto_alg_id = i;
+			break;
+		}
+	}
 
-	if (!ufshcd_is_crypto_enabled(hba) ||
-	    !ufshcd_keyslot_valid(hba, slot) ||
-	    !ice_cap_idx_valid(hba, crypto_alg_id))
-		return -EINVAL;
-
-	data_unit_mask = get_data_unit_size_mask(key->data_unit_size);
+	if (WARN_ON(crypto_alg_id < 0))
+		return -EOPNOTSUPP;
 
 	if (!(data_unit_mask &
 	      hba->crypto_cap_array[crypto_alg_id].sdus_mask))
@@ -104,16 +116,12 @@ out:
 	return err;
 }
 
-static int ufshcd_crypto_qti_keyslot_evict(struct keyslot_manager *ksm,
+static int ufshcd_crypto_qti_keyslot_evict(struct blk_keyslot_manager *ksm,
 					   const struct blk_crypto_key *key,
 					   unsigned int slot)
 {
 	int err = 0;
-	struct ufs_hba *hba = keyslot_manager_private(ksm);
-
-	if (!ufshcd_is_crypto_enabled(hba) ||
-	    !ufshcd_keyslot_valid(hba, slot))
-		return -EINVAL;
+	struct ufs_hba *hba = container_of(ksm, struct ufs_hba, ksm);
 
 	pm_runtime_get_sync(hba->dev);
 	err = ufshcd_hold(hba, false);
@@ -137,14 +145,14 @@ static int ufshcd_crypto_qti_keyslot_evict(struct keyslot_manager *ksm,
 	return err;
 }
 
-static int ufshcd_crypto_qti_derive_raw_secret(struct keyslot_manager *ksm,
+static int ufshcd_crypto_qti_derive_raw_secret(struct blk_keyslot_manager *ksm,
 					       const u8 *wrapped_key,
 					       unsigned int wrapped_key_size,
 					       u8 *secret,
 					       unsigned int secret_size)
 {
 	int err = 0;
-	struct ufs_hba *hba = keyslot_manager_private(ksm);
+	struct ufs_hba *hba = container_of(ksm, struct ufs_hba, ksm);
 
 	pm_runtime_get_sync(hba->dev);
 	err = ufshcd_hold(hba, false);
@@ -183,14 +191,11 @@ static enum blk_crypto_mode_num ufshcd_blk_crypto_qti_mode_num_for_alg_dusize(
 	return BLK_ENCRYPTION_MODE_INVALID;
 }
 
-static int ufshcd_hba_init_crypto_qti_spec(struct ufs_hba *hba,
-				    const struct blk_ksm_ll_ops *ksm_ops)
+static int ufshcd_hba_init_crypto_qti_spec(struct ufs_hba *hba)
 {
 	int cap_idx = 0;
 	int err = 0;
-	unsigned int crypto_modes_supported[BLK_ENCRYPTION_MODE_MAX];
 	enum blk_crypto_mode_num blk_mode_num;
-	unsigned int num_slots = 0;
 
 	/* Default to disabling crypto */
 	hba->caps &= ~UFSHCD_CAP_CRYPTO;
@@ -219,7 +224,16 @@ static int ufshcd_hba_init_crypto_qti_spec(struct ufs_hba *hba,
 		goto out;
 	}
 
-	memset(crypto_modes_supported, 0, sizeof(crypto_modes_supported));
+	/* The actual number of configurations supported is (CFGC+1) */
+	err = blk_ksm_init(&hba->ksm, NUM_KEYSLOTS(hba));
+	if (err)
+		goto out;
+
+	hba->ksm.ksm_ll_ops = ufshcd_crypto_qti_ksm_ops;
+	/* UFS only supports 8 bytes for any DUN */
+	hba->ksm.max_dun_bytes_supported = 8;
+	hba->ksm.dev = hba->dev;
+
 	/*
 	 * Store all the capabilities now so that we don't need to repeatedly
 	 * access the device each time we want to know its capabilities
@@ -235,19 +249,10 @@ static int ufshcd_hba_init_crypto_qti_spec(struct ufs_hba *hba,
 				hba->crypto_cap_array[cap_idx].key_size);
 		if (blk_mode_num == BLK_ENCRYPTION_MODE_INVALID)
 			continue;
-		crypto_modes_supported[blk_mode_num] |=
+		hba->ksm.crypto_modes_supported[blk_mode_num] |=
 			hba->crypto_cap_array[cap_idx].sdus_mask * 512;
 	}
 
-	num_slots = ufshcd_num_keyslots(hba);
-	hba->ksm = keyslot_manager_create(hba->dev, num_slots,
-				ksm_ops, BLK_CRYPTO_FEATURE_WRAPPED_KEYS,
-				crypto_modes_supported, hba);
-
-	if (!hba->ksm) {
-		err = -ENOMEM;
-		goto out;
-	}
 	pr_debug("%s: keyslot manager created\n", __func__);
 
 	return 0;
@@ -296,7 +301,7 @@ int ufshcd_crypto_qti_init_crypto(struct ufs_hba *hba,
 		}
 	}
 
-	err = ufshcd_hba_init_crypto_qti_spec(hba, &ufshcd_crypto_qti_ksm_ops);
+	err = ufshcd_hba_init_crypto_qti_spec(hba);
 	if (err) {
 		pr_err("%s: Error initiating crypto capabilities, err %d\n",
 					__func__, err);
