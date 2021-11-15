@@ -2266,7 +2266,7 @@ ufs_qcom_query_ioctl(struct ufs_hba *hba, u8 lun, void __user *buffer)
 			index = 0;
 			break;
 		case QUERY_DESC_IDN_UNIT:
-			if (!ufs_is_valid_unit_desc_lun(lun)) {
+			if (!ufs_is_valid_unit_desc_lun(&hba->dev_info, lun, UNIT_DESC_PARAM_LU_Q_DEPTH)) {
 				dev_err(hba->dev,
 					"%s: No unit descriptor for lun 0x%x\n",
 					__func__, lun);
@@ -3456,13 +3456,13 @@ static void ufs_qcom_parse_lpm(struct ufs_qcom_host *host)
  *
  * Toggles the (optional) reset line to reset the attached device.
  */
-static void ufs_qcom_device_reset(struct ufs_hba *hba)
+static int ufs_qcom_device_reset(struct ufs_hba *hba)
 {
 	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
 
 	/* reset gpio is optional */
 	if (!host->device_reset)
-		return;
+		return -EOPNOTSUPP;
 
 	/*
 	 * The UFS device shall detect reset pulses of 1us, sleep for 10us to
@@ -3473,6 +3473,8 @@ static void ufs_qcom_device_reset(struct ufs_hba *hba)
 
 	gpiod_set_value_cansleep(host->device_reset, 0);
 	usleep_range(10, 15);
+
+	return 0;
 }
 
 #if IS_ENABLED(CONFIG_DEVFREQ_GOV_SIMPLE_ONDEMAND)
@@ -3607,20 +3609,24 @@ static ssize_t clk_status_show(struct device *dev,
 static DEVICE_ATTR_RO(clk_status);
 
 static unsigned int ufs_qcom_gec(struct ufs_hba *hba,
-				 struct ufs_err_reg_hist *err_hist,
-				 char *err_name)
+				 u32 id, char *err_name)
 {
 	unsigned long flags;
 	int i, cnt_err = 0;
+	struct ufs_event_hist *e;
 
 	spin_lock_irqsave(hba->host->host_lock, flags);
-	for (i = 0; i < UFS_ERR_REG_HIST_LENGTH; i++) {
-		int p = (i + err_hist->pos) % UFS_ERR_REG_HIST_LENGTH;
 
-		if (err_hist->tstamp[p] == 0)
+	e = &hba->ufs_stats.event[id];
+
+	for (i = 0; i < UFS_EVENT_HIST_LENGTH; i++) {
+		int p = (i + e->pos) % UFS_EVENT_HIST_LENGTH;
+
+
+		if (e->tstamp[p] == 0)
 			continue;
 		dev_err(hba->dev, "%s[%d] = 0x%x at %lld us\n", err_name, p,
-			err_hist->reg[p], ktime_to_us(err_hist->tstamp[p]));
+			e->val[p], ktime_to_us(e->tstamp[p]));
 
 		++cnt_err;
 	}
@@ -3637,13 +3643,13 @@ static ssize_t err_count_show(struct device *dev,
 	return scnprintf(buf, PAGE_SIZE,
 			 "%s: %d\n%s: %d\n%s: %d\n",
 			 "pa_err_cnt_total",
-			 ufs_qcom_gec(hba, &hba->ufs_stats.pa_err,
+			 ufs_qcom_gec(hba, UFS_EVT_PA_ERR,
 				      "pa_err_cnt_total"),
 			 "dl_err_cnt_total",
-			 ufs_qcom_gec(hba, &hba->ufs_stats.dl_err,
+			 ufs_qcom_gec(hba, UFS_EVT_DL_ERR,
 				      "dl_err_cnt_total"),
 			 "dme_err_cnt",
-			 ufs_qcom_gec(hba, &hba->ufs_stats.dme_err,
+			 ufs_qcom_gec(hba, UFS_EVT_DME_ERR,
 				      "dme_err_cnt"));
 }
 
