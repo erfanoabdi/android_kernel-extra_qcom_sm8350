@@ -2770,12 +2770,6 @@ static int ufs_qcom_init(struct ufs_hba *hba)
 		goto out_variant_clear;
 	}
 
-	/*
-	 * Set the vendor specific ops needed for ICE.
-	 * Default implementation if the ops are not set.
-	 */
-	ufshcd_crypto_qti_set_vops(hba);
-
 	err = ufs_qcom_bus_register(host);
 	if (err)
 		goto out_variant_clear;
