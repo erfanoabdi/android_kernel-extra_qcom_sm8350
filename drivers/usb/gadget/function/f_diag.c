@@ -16,7 +16,7 @@
 
 #include <linux/usb/usbdiag.h>
 #include <linux/usb/composite.h>
-#include <linux/usb/gadget_caf.h>
+#include <linux/usb/gadget.h>
 #include <linux/workqueue.h>
 #include <linux/debugfs.h>
 #include <linux/kmemleak.h>

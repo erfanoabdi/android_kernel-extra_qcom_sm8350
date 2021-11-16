@@ -69,7 +69,7 @@ static int dp_altmode_release_ss_lanes(struct dp_altmode_private *altmode)
 	}
 
 	while (timeout) {
-		rc = dwc3_msm_release_ss_lane(&usb_pdev->dev, false);
+		rc = dwc3_msm_release_ss_lane(&usb_pdev->dev);
 		if (rc != -EBUSY)
 			break;
 

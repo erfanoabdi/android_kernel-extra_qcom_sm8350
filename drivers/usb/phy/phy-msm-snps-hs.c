@@ -21,24 +21,18 @@
 #include <linux/usb/dwc3-msm.h>
 #include <linux/reset.h>
 #include <linux/debugfs.h>
-#include <linux/qcom_scm_caf.h>
+#include <linux/qcom_scm.h>
 #include <linux/types.h>
 
 #define USB2_PHY_USB_PHY_UTMI_CTRL0		(0x3c)
 #define OPMODE_MASK				(0x3 << 3)
 #define OPMODE_NONDRIVING			(0x1 << 3)
 #define SLEEPM					BIT(0)
-#define OPMODE_NORMAL				(0x00)
-#define TERMSEL					BIT(5)
-
-#define USB2_PHY_USB_PHY_UTMI_CTRL1		(0x40)
-#define XCVRSEL					BIT(0)
 
 #define USB2_PHY_USB_PHY_UTMI_CTRL5		(0x50)
 #define POR					BIT(1)
 
 #define USB2_PHY_USB_PHY_HS_PHY_CTRL_COMMON0	(0x54)
-#define SIDDQ					BIT(2)
 #define RETENABLEN				BIT(3)
 #define FSEL_MASK				(0x7 << 4)
 #define FSEL_DEFAULT				(0x3 << 4)
@@ -120,6 +114,10 @@ struct msm_hsphy {
 	struct mutex		phy_lock;
 	struct regulator_desc	dpdm_rdesc;
 	struct regulator_dev	*dpdm_rdev;
+
+	struct power_supply	*usb_psy;
+	unsigned int		vbus_draw;
+	struct work_struct	vbus_draw_work;
 
 	/* debugfs entries */
 	struct dentry		*root;
@@ -281,12 +279,6 @@ put_vdd_lpm:
 	ret = regulator_set_load(phy->vdd, 0);
 	if (ret < 0)
 		dev_err(phy->phy.dev, "Unable to set LPM of vdd\n");
-	/* Return from here based on power_enabled. If it is not set
-	 * then return -EINVAL since either set_voltage or
-	 * regulator_enable failed
-	 */
-	if (!phy->power_enabled)
-		return -EINVAL;
 err_vdd:
 	phy->power_enabled = false;
 	dev_dbg(phy->phy.dev, "HSUSB PHY's regulators are turned OFF.\n");
@@ -465,9 +457,6 @@ static int msm_hsphy_init(struct usb_phy *uphy)
 	msm_usb_write_readback(phy->base, USB2_PHY_USB_PHY_UTMI_CTRL0,
 				SLEEPM, SLEEPM);
 
-	msm_usb_write_readback(phy->base, USB2_PHY_USB_PHY_HS_PHY_CTRL_COMMON0,
-				SIDDQ, 0);
-
 	msm_usb_write_readback(phy->base, USB2_PHY_USB_PHY_UTMI_CTRL5,
 				POR, 0);
 
@@ -495,12 +484,14 @@ static int msm_hsphy_set_suspend(struct usb_phy *uphy, int suspend)
 
 suspend:
 	if (suspend) { /* Bus suspend */
-		if (phy->cable_connected) {
-			/* Enable auto-resume functionality during host mode
-			 * bus suspend with some FS/HS peripheral connected.
+		if (phy->cable_connected ||
+			(phy->phy.flags & PHY_HOST_MODE)) {
+			/* Enable auto-resume functionality only when
+			 * there is some peripheral connected and real
+			 * bus suspend happened
 			 */
-			if ((phy->phy.flags & PHY_HOST_MODE) &&
-				(phy->phy.flags & PHY_HSFS_MODE)) {
+			if ((phy->phy.flags & PHY_HSFS_MODE) ||
+				(phy->phy.flags & PHY_LS_MODE)) {
 				/* Enable auto-resume functionality by pulsing
 				 * signal
 				 */
@@ -562,59 +553,38 @@ static int msm_hsphy_notify_disconnect(struct usb_phy *uphy,
 	return 0;
 }
 
-#define DP_PULSE_WIDTH_MSEC 200
-static enum usb_charger_type usb_phy_drive_dp_pulse(struct usb_phy *uphy)
+static void msm_hsphy_vbus_draw_work(struct work_struct *w)
 {
-	struct msm_hsphy *phy = container_of(uphy, struct msm_hsphy, phy);
+	struct msm_hsphy *phy = container_of(w, struct msm_hsphy,
+			vbus_draw_work);
+	union power_supply_propval val = {0};
 	int ret;
 
-	ret = msm_hsphy_enable_power(phy, true);
-	if (ret < 0) {
-		dev_dbg(phy->phy.dev,
-			"dpdm regulator enable failed:%d\n", ret);
-		return 0;
+	if (!phy->usb_psy) {
+		phy->usb_psy = power_supply_get_by_name("usb");
+		if (!phy->usb_psy) {
+			dev_err(phy->phy.dev, "Could not get usb psy\n");
+			return;
+		}
 	}
-	msm_hsphy_enable_clocks(phy, true);
-	/* set utmi_phy_cmn_cntrl_override_en &
-	 * utmi_phy_datapath_ctrl_override_en
-	 */
-	msm_usb_write_readback(phy->base, USB2_PHY_USB_PHY_CFG0,
-				UTMI_PHY_CMN_CTRL_OVERRIDE_EN,
-				UTMI_PHY_CMN_CTRL_OVERRIDE_EN);
-	msm_usb_write_readback(phy->base, USB2_PHY_USB_PHY_CFG0,
-				UTMI_PHY_DATAPATH_CTRL_OVERRIDE_EN,
-				UTMI_PHY_DATAPATH_CTRL_OVERRIDE_EN);
-	/* set opmode to normal i.e. 0x0 & termsel to fs */
-	msm_usb_write_readback(phy->base, USB2_PHY_USB_PHY_UTMI_CTRL0,
-				OPMODE_MASK, OPMODE_NORMAL);
-	msm_usb_write_readback(phy->base, USB2_PHY_USB_PHY_UTMI_CTRL0,
-				TERMSEL, TERMSEL);
-	/* set xcvrsel to fs */
-	msm_usb_write_readback(phy->base, USB2_PHY_USB_PHY_UTMI_CTRL1,
-					XCVRSEL, XCVRSEL);
-	msleep(DP_PULSE_WIDTH_MSEC);
-	/* clear termsel to fs */
-	msm_usb_write_readback(phy->base, USB2_PHY_USB_PHY_UTMI_CTRL0,
-				TERMSEL, 0x00);
-	/* clear xcvrsel */
-	msm_usb_write_readback(phy->base, USB2_PHY_USB_PHY_UTMI_CTRL1,
-					XCVRSEL, 0x00);
-	/* clear utmi_phy_cmn_cntrl_override_en &
-	 * utmi_phy_datapath_ctrl_override_en
-	 */
-	msm_usb_write_readback(phy->base, USB2_PHY_USB_PHY_CFG0,
-				UTMI_PHY_CMN_CTRL_OVERRIDE_EN, 0x00);
-	msm_usb_write_readback(phy->base, USB2_PHY_USB_PHY_CFG0,
-				UTMI_PHY_DATAPATH_CTRL_OVERRIDE_EN, 0x00);
 
-	msleep(20);
+	dev_info(phy->phy.dev, "Avail curr from USB = %u\n", phy->vbus_draw);
 
-	msm_hsphy_enable_clocks(phy, false);
-	ret = msm_hsphy_enable_power(phy, false);
-	if (ret < 0) {
-		dev_dbg(phy->phy.dev,
-			"dpdm regulator disable failed:%d\n", ret);
+	/* Set max current limit in uA */
+	val.intval = 1000 * phy->vbus_draw;
+	ret = power_supply_set_property(phy->usb_psy, POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT, &val);
+	if (ret) {
+		dev_dbg(phy->phy.dev, "Error (%d) setting input current limit\n", ret);
+		return;
 	}
+}
+
+static int msm_hsphy_set_power(struct usb_phy *uphy, unsigned int mA)
+{
+	struct msm_hsphy *phy = container_of(uphy, struct msm_hsphy, phy);
+
+	phy->vbus_draw = mA;
+	schedule_work(&phy->vbus_draw_work);
 
 	return 0;
 }
@@ -888,8 +858,8 @@ static int msm_hsphy_probe(struct platform_device *pdev)
 	phy->phy.set_suspend		= msm_hsphy_set_suspend;
 	phy->phy.notify_connect		= msm_hsphy_notify_connect;
 	phy->phy.notify_disconnect	= msm_hsphy_notify_disconnect;
+	phy->phy.set_power		= msm_hsphy_set_power;
 	phy->phy.type			= USB_PHY_TYPE_USB2;
-	phy->phy.charger_detect		= usb_phy_drive_dp_pulse;
 
 	ret = usb_add_phy_dev(&phy->phy);
 	if (ret)
@@ -901,6 +871,7 @@ static int msm_hsphy_probe(struct platform_device *pdev)
 		return ret;
 	}
 
+	INIT_WORK(&phy->vbus_draw_work, msm_hsphy_vbus_draw_work);
 	msm_hsphy_create_debugfs(phy);
 
 	/*
@@ -922,6 +893,9 @@ static int msm_hsphy_remove(struct platform_device *pdev)
 
 	if (!phy)
 		return 0;
+
+	if (phy->usb_psy)
+		power_supply_put(phy->usb_psy);
 
 	debugfs_remove_recursive(phy->root);
 

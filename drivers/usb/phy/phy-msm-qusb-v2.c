@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-only
 /*
- * Copyright (c) 2014-2021, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2014-2020, The Linux Foundation. All rights reserved.
  */
 
 #include <linux/module.h>
@@ -461,25 +461,6 @@ static void qusb_phy_write_seq(void __iomem *base, u32 *seq, int cnt,
 	}
 }
 
-static void msm_usb_write_readback(void __iomem *base, u32 offset,
-					const u32 mask, u32 val)
-{
-	u32 write_val, tmp = readl_relaxed(base + offset);
-
-	tmp &= ~mask;		/* retain other bits */
-	write_val = tmp | val;
-
-	writel_relaxed(write_val, base + offset);
-
-	/* Read back to see if val was written */
-	tmp = readl_relaxed(base + offset);
-	tmp &= mask;		/* clear other bits */
-
-	if (tmp != val)
-		pr_err("%s: write: %x to QSCRATCH: %x FAILED\n",
-			__func__, val, offset);
-}
-
 static void qusb_phy_reset(struct qusb_phy *qphy)
 {
 	int ret;
@@ -834,61 +815,6 @@ static int qusb_phy_notify_disconnect(struct usb_phy *phy,
 	return 0;
 }
 
-#define DP_PULSE_WIDTH_MSEC 200
-static enum usb_charger_type usb_phy_drive_dp_pulse(struct usb_phy *phy)
-{
-	struct qusb_phy *qphy = container_of(phy, struct qusb_phy, phy);
-	int ret;
-
-	ret = qusb_phy_enable_power(qphy);
-	if (ret < 0) {
-		dev_dbg(qphy->phy.dev,
-			"dpdm regulator enable failed:%d\n", ret);
-		return 0;
-	}
-	qusb_phy_enable_clocks(qphy, true);
-	msm_usb_write_readback(qphy->base, qphy->phy_reg[PWR_CTRL1],
-				PWR_CTRL1_POWR_DOWN, 0x00);
-	msm_usb_write_readback(qphy->base, qphy->phy_reg[DEBUG_CTRL4],
-				FORCED_UTMI_DPPULLDOWN, 0x00);
-	msm_usb_write_readback(qphy->base, qphy->phy_reg[DEBUG_CTRL4],
-				FORCED_UTMI_DMPULLDOWN,
-				FORCED_UTMI_DMPULLDOWN);
-	msm_usb_write_readback(qphy->base, qphy->phy_reg[DEBUG_CTRL3],
-				0xd1, 0xd1);
-	msm_usb_write_readback(qphy->base, qphy->phy_reg[PWR_CTRL1],
-				CLAMP_N_EN, CLAMP_N_EN);
-	msm_usb_write_readback(qphy->base, qphy->phy_reg[INTR_CTRL],
-				DPSE_INTR_HIGH_SEL, 0x00);
-	msm_usb_write_readback(qphy->base, qphy->phy_reg[INTR_CTRL],
-				DPSE_INTR_EN, DPSE_INTR_EN);
-
-	msleep(DP_PULSE_WIDTH_MSEC);
-
-	msm_usb_write_readback(qphy->base, qphy->phy_reg[INTR_CTRL],
-				DPSE_INTR_HIGH_SEL |
-				DPSE_INTR_EN, 0x00);
-	msm_usb_write_readback(qphy->base, qphy->phy_reg[DEBUG_CTRL3],
-				0xd1, 0x00);
-	msm_usb_write_readback(qphy->base, qphy->phy_reg[DEBUG_CTRL4],
-				FORCED_UTMI_DPPULLDOWN |
-				FORCED_UTMI_DMPULLDOWN, 0x00);
-	msm_usb_write_readback(qphy->base, qphy->phy_reg[PWR_CTRL1],
-				PWR_CTRL1_POWR_DOWN |
-				CLAMP_N_EN, 0x00);
-
-	msleep(20);
-
-	qusb_phy_enable_clocks(qphy, false);
-	ret = qusb_phy_disable_power(qphy);
-	if (ret < 0) {
-		dev_dbg(qphy->phy.dev,
-			"dpdm regulator disable failed:%d\n", ret);
-	}
-
-	return 0;
-}
-
 static int qusb_phy_dpdm_regulator_enable(struct regulator_dev *rdev)
 {
 	int ret = 0;
@@ -1082,7 +1008,7 @@ static int qusb_phy_probe(struct platform_device *pdev)
 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
 							"efuse_addr");
 	if (res) {
-		qphy->efuse_reg = devm_ioremap(dev, res->start,
+		qphy->efuse_reg = devm_ioremap_nocache(dev, res->start,
 							resource_size(res));
 		if (!IS_ERR_OR_NULL(qphy->efuse_reg)) {
 			ret = of_property_read_u32(dev->of_node,
@@ -1318,7 +1244,6 @@ static int qusb_phy_probe(struct platform_device *pdev)
 	qphy->phy.type			= USB_PHY_TYPE_USB2;
 	qphy->phy.notify_connect        = qusb_phy_notify_connect;
 	qphy->phy.notify_disconnect     = qusb_phy_notify_disconnect;
-	qphy->phy.charger_detect	= usb_phy_drive_dp_pulse;
 
 	ret = usb_add_phy_dev(&qphy->phy);
 	if (ret)

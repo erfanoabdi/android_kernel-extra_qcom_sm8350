@@ -8,7 +8,6 @@
 
 #include <linux/scatterlist.h>
 #include <linux/usb/gadget.h>
-#include <linux/soc/qcom/llcc-tcm.h>
 
 /* used for struct usb_phy flags */
 #define PHY_HOST_MODE			BIT(0)
@@ -20,7 +19,8 @@
 #define EUD_SPOOF_DISCONNECT		BIT(6)
 #define EUD_SPOOF_CONNECT		BIT(7)
 #define PHY_SUS_OVERRIDE		BIT(8)
-#define PHY_USB_DP_CONCURRENT_MODE	BIT(9)
+#define PHY_DP_MODE			BIT(9)
+#define PHY_USB_DP_CONCURRENT_MODE	BIT(10)
 
 /*
  * The following are bit fields describing the USB BAM options.
@@ -54,6 +54,32 @@ enum gsi_ep_op {
 	GSI_EP_OP_DISABLE,
 };
 
+enum usb_hw_ep_mode {
+	USB_EP_NONE,
+	USB_EP_BAM,
+	USB_EP_GSI,
+};
+
+enum dwc3_notify_event {
+	DWC3_CONTROLLER_ERROR_EVENT,
+	DWC3_CONTROLLER_RESET_EVENT,
+	DWC3_CONTROLLER_POST_RESET_EVENT,
+	DWC3_CORE_PM_SUSPEND_EVENT,
+	DWC3_CORE_PM_RESUME_EVENT,
+	DWC3_CONTROLLER_CONNDONE_EVENT,
+	DWC3_CONTROLLER_NOTIFY_OTG_EVENT,
+	DWC3_CONTROLLER_NOTIFY_DISABLE_UPDXFER,
+	DWC3_CONTROLLER_PULLUP,
+
+	/* USB GSI event buffer related notification */
+	DWC3_GSI_EVT_BUF_ALLOC,
+	DWC3_GSI_EVT_BUF_SETUP,
+	DWC3_GSI_EVT_BUF_CLEANUP,
+	DWC3_GSI_EVT_BUF_CLEAR,
+	DWC3_GSI_EVT_BUF_FREE,
+	DWC3_CONTROLLER_NOTIFY_CLEAR_DB,
+};
+
 /*
  * @buf_base_addr: Base pointer to buffer allocated for each GSI enabled EP.
  *	TRBs point to buffers that are split from this pool. The size of the
@@ -70,9 +96,6 @@ enum gsi_ep_op {
  * @mapped_db_reg_phs_addr_lsb: doorbell LSB IOVA address mapped with IOMMU
  * @db_reg_phs_addr_msb: IPA channel doorbell register's physical address MSB
  * @ep_intr_num: Interrupter number for EP.
- * @sgt_trb_xfer_ring: USB TRB ring related sgtable entries
- * @sgt_data_buff: Data buffer related sgtable entries
- * @dev: pointer to the DMA-capable dwc device
  */
 struct usb_gsi_request {
 	void *buf_base_addr;
@@ -85,9 +108,6 @@ struct usb_gsi_request {
 	u8 ep_intr_num;
 	struct sg_table sgt_trb_xfer_ring;
 	struct sg_table sgt_data_buff;
-	struct device *dev;
-	bool use_tcm_mem;
-	struct llcc_tcm_data *tcm_mem;
 };
 
 /*
@@ -119,25 +139,28 @@ struct gsi_channel_info {
 	struct usb_gsi_request *ch_req;
 };
 
+struct dwc3;
+
 #if IS_ENABLED(CONFIG_USB_DWC3_MSM)
-struct usb_ep *usb_ep_autoconfig_by_name(struct usb_gadget *gadget,
-		struct usb_endpoint_descriptor *desc, const char *ep_name);
+void dwc3_msm_notify_event(struct dwc3 *dwc,
+		enum dwc3_notify_event event, unsigned int value);
 int usb_gsi_ep_op(struct usb_ep *ep, void *op_data, enum gsi_ep_op op);
 int msm_ep_config(struct usb_ep *ep, struct usb_request *request, u32 bam_opts);
 int msm_ep_unconfig(struct usb_ep *ep);
-void msm_ep_set_endless(struct usb_ep *ep, bool set_clear);
 void dwc3_tx_fifo_resize_request(struct usb_ep *ep, bool qdss_enable);
 int msm_data_fifo_config(struct usb_ep *ep, unsigned long addr, u32 size,
 	u8 dst_pipe_idx);
-bool msm_dwc3_reset_ep_after_lpm(struct usb_gadget *gadget);
 int msm_dwc3_reset_dbm_ep(struct usb_ep *ep);
-int dwc3_msm_release_ss_lane(struct device *dev, bool usb_dp_concurrent_mode);
-bool usb_get_remote_wakeup_status(struct usb_gadget *gadget);
+int dwc3_msm_set_dp_mode(struct device *dev, bool connected, int lanes);
+int dwc3_msm_release_ss_lane(struct device *dev);
+int msm_ep_update_ops(struct usb_ep *ep);
+int msm_ep_clear_ops(struct usb_ep *ep);
+int msm_ep_set_mode(struct usb_ep *ep, enum usb_hw_ep_mode mode);
+int dwc3_core_stop_hw_active_transfers(struct dwc3 *dwc);
 #else
-static inline struct usb_ep *usb_ep_autoconfig_by_name(
-		struct usb_gadget *gadget, struct usb_endpoint_descriptor *desc,
-		const char *ep_name)
-{ return NULL; }
+void dwc3_msm_notify_event(struct dwc3 *dwc,
+		enum dwc3_notify_event event, unsigned int value)
+{ }
 static inline int usb_gsi_ep_op(struct usb_ep *ep, void *op_data,
 		enum gsi_ep_op op)
 { return 0; }
@@ -149,26 +172,32 @@ static inline int msm_ep_config(struct usb_ep *ep, struct usb_request *request,
 { return -ENODEV; }
 static inline int msm_ep_unconfig(struct usb_ep *ep)
 { return -ENODEV; }
-static inline void msm_ep_set_endless(struct usb_ep *ep, bool set_clear)
-{ }
 static inline void dwc3_tx_fifo_resize_request(struct usb_ep *ep,
 	bool qdss_enable)
 { }
 static inline bool msm_dwc3_reset_ep_after_lpm(struct usb_gadget *gadget)
 { return false; }
-static inline int msm_dwc3_reset_dbm_ep(struct usb_ep *ep)
+static inline int dwc3_msm_set_dp_mode(struct device *dev, bool connected, int lanes)
 { return -ENODEV; }
-static inline int dwc3_msm_release_ss_lane(struct device *dev, bool usb_dp_concurrent_mode)
+static inline int dwc3_msm_release_ss_lane(struct device *dev)
 { return -ENODEV; }
-static bool __maybe_unused usb_get_remote_wakeup_status(struct usb_gadget *gadget)
-{ return false; }
+int msm_ep_update_ops(struct usb_ep *ep)
+{ return -ENODEV; }
+int msm_ep_clear_ops(struct usb_ep *ep)
+{ return -ENODEV; }
+int msm_ep_set_mode(struct usb_ep *ep, enum usb_hw_ep_mode mode)
+{ return -ENODEV; }
+inline int dwc3_core_stop_hw_active_transfers(struct dwc3 *dwc)
+{ return 0; }
 #endif
 
-#if IS_ENABLED(CONFIG_USB_F_GSI)
-void rmnet_gsi_update_in_buffer_mem_type(struct usb_function *f, bool use_tcm);
+#ifdef CONFIG_ARM64
+int dwc3_msm_kretprobe_init(void);
+void dwc3_msm_kretprobe_exit(void);
 #else
-static inline __maybe_unused void rmnet_gsi_update_in_buffer_mem_type(
-		struct usb_function *f, bool use_tcm)
+int dwc3_msm_kretprobe_init(void)
+{ return 0; }
+void dwc3_msm_kretprobe_exit(void)
 { }
 #endif
 

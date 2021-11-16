@@ -98,7 +98,7 @@ struct ssusb_redriver {
 	u8	flat_gain[CHAN_MODE_NUM][CHANNEL_NUM];
 
 	u8	gen_dev_val;
-	int	ucsi_i2c_write_err;
+	bool	lane_channel_swap;
 
 	struct dentry	*debug_root;
 };
@@ -413,6 +413,14 @@ static int ssusb_redriver_read_orientation(struct ssusb_redriver *redriver)
 		return -EINVAL;
 	}
 
+	/*
+	 * Support some board layouts in which the channels are reversed.
+	 * i.e. channels C&D are used for the USB CC1 orientation and
+	 * channels A&B are used for USB CC2
+	 */
+	if (redriver->lane_channel_swap)
+		ret = !ret;
+
 	if (ret == 0)
 		redriver->typec_orientation = ORIENTATION_CC1;
 	else
@@ -498,7 +506,6 @@ static int ssusb_redriver_ucsi_notifier(struct notifier_block *nb,
 	ret = ssusb_redriver_channel_update(redriver);
 	if (ret) {
 		dev_dbg(redriver->dev, "i2c bus may not resume(%d)\n", ret);
-		redriver->ucsi_i2c_write_err = ret;
 		return NOTIFY_DONE;
 	}
 	ssusb_redriver_gen_dev_set(redriver);
@@ -522,29 +529,27 @@ int redriver_notify_connect(struct device_node *node)
 	if (!redriver)
 		return -EINVAL;
 
-	/* 1. no operation in recovery mode.
-	 * 2. needed when usb related mode set.
-	 * 3. currently ucsi notification arrive to redriver earlier than usb,
-	 * in ucsi notification callback, save mode even i2c write failed,
-	 * but add ucsi_i2c_write_err to indicate i2c write error,
-	 * this allow usb trigger i2c write again by check it.
-	 * !!! if future remove ucsi, ucsi_i2c_write_err can be removed,
-	 * and this function also need update !!!.
-	 */
 	if ((redriver->op_mode == OP_MODE_DEFAULT) ||
-	    ((redriver->op_mode != OP_MODE_USB) &&
-	     (redriver->op_mode != OP_MODE_USB_AND_DP)) ||
-	    (!redriver->ucsi_i2c_write_err))
+	    (redriver->op_mode == OP_MODE_DP))
 		return 0;
 
-	dev_dbg(redriver->dev, "op mode %s\n",
+	/* if ucsi ppm can't return status with Connector Partner Changed
+	 * bit set, redriver will not process the notification,
+	 * but ucsi still start usb host/device mode,
+	 * then redriver stay in disabled state, super speed (plus)
+	 * will not work.
+	 * fix should come from ucsi ppm, it is a enhancement here.
+	 * TODO: redriver controlled by dwc3, remove ucsi notification
+	 */
+	if (redriver->op_mode == OP_MODE_NONE) {
+		redriver->op_mode = OP_MODE_USB;
+		ssusb_redriver_read_orientation(redriver);
+	}
+	dev_dbg(redriver->dev, "connect op mode %s\n",
 		OPMODESTR(redriver->op_mode));
 
-	/* !!! assume i2c resume complete here !!! */
 	ssusb_redriver_channel_update(redriver);
 	ssusb_redriver_gen_dev_set(redriver);
-
-	redriver->ucsi_i2c_write_err = 0;
 
 	return 0;
 }
@@ -621,18 +626,16 @@ int redriver_gadget_pullup(struct device_node *node, int is_on)
 {
 	struct ssusb_redriver *redriver;
 	struct i2c_client *client;
-	u8 val;
+	u8 val = 0;
 
 	if (!node)
-		return -ENODEV;
+		return -EINVAL;
 
 	client = of_find_i2c_device_by_node(node);
 	if (!client)
-		return -ENODEV;
+		return -EINVAL;
 
 	redriver = i2c_get_clientdata(client);
-	if (!redriver)
-		return -EINVAL;
 
 	/*
 	 * when redriver connect to a USB hub, and do adb root operation,
@@ -640,14 +643,15 @@ int redriver_gadget_pullup(struct device_node *node, int is_on)
 	 * hub will not detct device logical removal.
 	 * workaround to temp disable/enable redriver when usb pullup operation.
 	 */
-	if (redriver->op_mode != OP_MODE_USB)
-		return 0;
+	if (redriver->op_mode == OP_MODE_USB ||
+	    redriver->op_mode == OP_MODE_DEFAULT) {
+		val = redriver->gen_dev_val;
+		if (!is_on)
+			val &= ~CHIP_EN;
+	}
 
-	val = redriver->gen_dev_val;
-	if (!is_on)
-		val &= ~CHIP_EN;
-
-	redriver_i2c_reg_set(redriver, GEN_DEV_SET_REG, val);
+	if (val)
+		redriver_i2c_reg_set(redriver, GEN_DEV_SET_REG, val);
 
 	return 0;
 }
@@ -707,6 +711,9 @@ static int redriver_i2c_probe(struct i2c_client *client,
 			"Failed to read default configuration: %d\n", ret);
 		return ret;
 	}
+
+	redriver->lane_channel_swap =
+	    of_property_read_bool(redriver->dev->of_node, "lane-channel-swap");
 
 	if (of_property_read_bool(redriver->dev->of_node, "init-none"))
 		redriver->op_mode = OP_MODE_NONE;
@@ -1073,14 +1080,14 @@ static const struct of_device_id redriver_match_table[] = {
 };
 
 static const struct i2c_device_id redriver_i2c_id[] = {
-	{ "ssusb redriver", 0 },
+	{ "ssusb-redriver", 0 },
 	{ },
 };
 MODULE_DEVICE_TABLE(i2c, redriver_i2c_id);
 
 static struct i2c_driver redriver_i2c_driver = {
 	.driver = {
-		.name	= "ssusb redriver",
+		.name	= "ssusb-redriver",
 		.of_match_table	= redriver_match_table,
 		.pm	= &redriver_i2c_pm,
 	},
